@@ -1,0 +1,9 @@
+id: http://farsightsecurity.com/axamd-anomalies-output-schema#
+$schema: http://json-schema.org/draft-04/schema#
+title: axamd anomalies output schema
+description: Schema describing the output of the AXAMD anomalies command, a mapping of anomaly module names to descriptions
+type: object
+patternProperties:
+        '^ch[0-9]+$':
+                description: Anomaly module name and description
+                type: string

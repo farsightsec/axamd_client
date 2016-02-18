@@ -1,0 +1,9 @@
+id: http://farsightsecurity.com/axamd-channels-output-schema#
+$schema: http://json-schema.org/draft-04/schema#
+title: axamd channels output schema
+description: Schema describing the output of the AXAMD channels command, a mapping of channel numbers to names
+type: object
+patternProperties:
+        '^ch[0-9]+$':
+                description: Channel number and name
+                type: string

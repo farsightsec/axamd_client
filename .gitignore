@@ -1,0 +1,12 @@
+*.pyc
+.*.swp
+*.egg-info
+/.coverage
+/coverage
+/build
+/dist
+debian/*.debhelper
+debian/*.log
+debian/*.substvars
+debian/files
+debian/tmp
