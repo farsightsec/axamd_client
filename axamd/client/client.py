@@ -1,6 +1,7 @@
 from .exceptions import ProblemDetails
 from .six_mini import reraise
 import requests
+import json
 
 class _rq_ctx:
     def __enter__(self): pass
