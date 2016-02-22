@@ -20,17 +20,94 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import operator
 import sys
 import types
 
 __author__ = "Benjamin Peterson <benjamin@python.org>"
 __version__ = "1.5.2"
 
-
 # Useful for very coarse version differentiation.
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+
+def _import_module(name):
+    """Import module, returning the module after the last dot."""
+    __import__(name)
+    return sys.modules[name]
+
+class _LazyDescr(object):
+
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, tp):
+        result = self._resolve()
+        setattr(obj, self.name, result) # Invokes __set__.
+        # This is a bit ugly, but it avoids running this again.
+        delattr(obj.__class__, self.name)
+        return result
+
+
+class MovedModule(_LazyDescr):
+
+    def __init__(self, name, old, new=None):
+        super(MovedModule, self).__init__(name)
+        if PY3:
+            if new is None:
+                new = name
+            self.mod = new
+        else:
+            self.mod = old
+
+    def _resolve(self):
+        return _import_module(self.mod)
+
+    def __getattr__(self, attr):
+        # Hack around the Django autoreloader. The reloader tries to get
+        # __file__ or __name__ of every module in sys.modules. This doesn't work
+        # well if this MovedModule is for an module that is unavailable on this
+        # machine (like winreg on Unix systems). Thus, we pretend __file__ and
+        # __name__ don't exist if the module hasn't been loaded yet. See issues
+        # #51 and #53.
+        if attr in ("__file__", "__name__") and self.mod not in sys.modules:
+            raise AttributeError
+        _module = self._resolve()
+        value = getattr(_module, attr)
+        setattr(self, attr, value)
+        return value
+
+
+class _LazyModule(types.ModuleType):
+
+    def __init__(self, name):
+        super(_LazyModule, self).__init__(name)
+        self.__doc__ = self.__class__.__doc__
+
+    def __dir__(self):
+        attrs = ["__doc__", "__name__"]
+        attrs += [attr.name for attr in self._moved_attributes]
+        return attrs
+
+    # Subclasses should override this
+    _moved_attributes = []
+
+
+class _MovedItems(_LazyModule):
+    """Lazy loading of moved objects"""
+
+
+_moved_attributes = [
+    MovedModule("builtins", "__builtin__"),
+]
+for attr in _moved_attributes:
+    setattr(_MovedItems, attr.name, attr)
+    if isinstance(attr, MovedModule):
+        sys.modules[__name__ + ".moves." + attr.name] = attr
+del attr
+
+_MovedItems._moved_attributes = _moved_attributes
+
+moves = sys.modules[__name__ + ".moves"] = _MovedItems(__name__ + ".moves")
 
 if PY3:
     exec_ = getattr(moves.builtins, "exec")
