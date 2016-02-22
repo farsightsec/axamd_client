@@ -6,8 +6,7 @@ import logging
 import os
 import sys
 
-from .anomaly import Anomaly
-from .client import Client
+from .client import Anomaly, Client
 from .exceptions import ValidationError
 from .schema import stream_params_validate
 import jsonschema
