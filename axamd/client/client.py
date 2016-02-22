@@ -54,8 +54,7 @@ class Client:
         self._server = server
         self._apikey = apikey
 
-    def _stream(self, timeout=None, **stream_params):
-        uri='{}/v1/sra/stream'.format(self._server)
+    def _stream(self, uri, timeout=None, **stream_params):
         _stream_params_validate(stream_params)
         with _rq_ctx():
             r = requests.post(uri, data=json.dumps(stream_params),
@@ -73,10 +72,12 @@ class Client:
             return r.json()
 
     def sra(self, channels=[], watches=[], **params):
-        return self._stream(channels=channels, watches=watches, **params)
+        uri='{}/v1/sra/stream'.format(self._server)
+        return self._stream(uri, channels=channels, watches=watches, **params)
 
     def rad(self, anomalies=[], **params):
-        return self._stream(anomalies=[a.to_dict() for a in anomalies],
+        uri='{}/v1/rad/stream'.format(self._server)
+        return self._stream(uri, anomalies=[a.to_dict() for a in anomalies],
                 **params)
 
     def list_channels(self, timeout=None):
@@ -84,5 +85,5 @@ class Client:
         return self._get(uri, timeout=timeout)
 
     def list_anomalies(self, timeout=None):
-        uri='{}/v1/sra/anomalies'.format(self._server)
+        uri='{}/v1/rad/anomalies'.format(self._server)
         return self._get(uri, timeout=timeout)
