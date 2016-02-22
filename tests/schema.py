@@ -115,7 +115,7 @@ class TestAXAJSONSchema(TestSchema, unittest.TestCase):
     def setUpClass(cls):
         cls.load_schema('axamd.client', 'axa-json-schema.yaml')
 
-strings = '''\
+axa_json_strings = '''\
 {"tag":4,"op":"HELLO","id":1,"pvers_min":2,"pvers_max":3,"str":"hello"}
 {"tag":"*","op":"JOIN","id":0}
 {"tag":1,"op":"OK","orig_op":"WATCH HIT","str":"success"}
@@ -158,5 +158,5 @@ def gen_test_yaml(s):
     def test_yaml_string(self):
         jsonschema.validate(yaml.safe_load(s), self.__class__.schema)
     return test_yaml_string
-for idx,s in enumerate(strings):
-    setattr(TestAXAJSONSchema, 'test_{}'.format(idx), gen_test_yaml(s))
+for s in axa_json_strings:
+    setattr(TestAXAJSONSchema, 'test_schema({})'.format(s), gen_test_yaml(s))
