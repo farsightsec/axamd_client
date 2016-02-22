@@ -3,27 +3,31 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from io import StringIO
-import textwrap
 import unittest
 
 import axamd.client
 import pyflakes.api
 import pyflakes.reporter
-import six
+import tests
 
 class TestFlakes(unittest.TestCase):
-    _base_dir = os.path.dirname(axamd.client.__file__)
-    for fn in pyflakes.api.iterSourceCode([_base_dir]):
-        six.exec_(textwrap.dedent('''\
-            def _tcase(self):
-                errors = StringIO()
-                reporter = pyflakes.reporter.Reporter(errors, errors)
-                f = open({0!r})
-                pyflakes.api.check(f.read(), {0!r}, reporter=reporter)
-                f.close()
-                if errors.tell():
-                    self.fail(errors.getvalue())
-                '''.format(fn)))
-        _tname = fn[len(_base_dir)+1:-3].replace('/','_')
-        six.exec_('test_flakes_{} = _tcase'.format(_tname))
-    longMessage = True
+    pass
+
+def gen_tcase(fn):
+    def _tcase(self):
+        errors = StringIO()
+        reporter = pyflakes.reporter.Reporter(errors, errors)
+        f = open(fn)
+        pyflakes.api.check(f.read(), fn, reporter=reporter)
+        f.close()
+        if errors.tell():
+            self.fail(errors.getvalue())
+    return _tcase
+
+for module in (axamd.client, tests):
+    base_dir = os.path.dirname(module.__file__)
+    for fn in pyflakes.api.iterSourceCode([base_dir]):
+        tname = fn[len(base_dir)+1:-3]
+        setattr(TestFlakes,
+                'test_flakes({}.{})'.format(module.__name__, tname),
+                gen_tcase(fn))
