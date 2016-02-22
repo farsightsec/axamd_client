@@ -8,9 +8,11 @@ properties:
                 description: URI to AXAMD server
                 type: string
                 format: uri
+                minLength: 1
         apikey:
                 description: Key for authentication
                 type: string
+                minLength: 1
         timeout:
                 description: Socket timeout in seconds
                 type: number
@@ -32,6 +34,3 @@ properties:
                 type: integer
                 minimum: 0
                 exclusiveMinimum: true
-required:
-        - server
-        - apikey
