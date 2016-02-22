@@ -7,13 +7,9 @@ import os
 import sys
 
 from .client import Anomaly, Client
-from .exceptions import ValidationError
-from .schema import stream_params_validate
 import jsonschema
 import option_merge
 import pkg_resources
-import requests
-import six
 import yaml
 
 logger = logging.getLogger(__name__)
@@ -120,7 +116,7 @@ def main():
     if not (args.list_channels or args.list_anomalies or args.watches):
         parser.error('A watch list is required unless listing available channels or anomaly modules')
 
-    client = Client(server=config['server'], apikey=config['apikey'], stream_params_validate=stream_params_validate)
+    client = Client(server=config['server'], apikey=config['apikey'])
 
     timeout = config.get('timeout')
 

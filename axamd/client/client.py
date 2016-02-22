@@ -1,7 +1,26 @@
-from .exceptions import ProblemDetails
+from .exceptions import ProblemDetails, ValidationError
 from .six_mini import reraise
 import requests
 import json
+
+try:
+    import pkg_resources
+    import yaml
+    import jsonschema
+    import sys
+
+    _stream_param_schema = yaml.safe_load(pkg_resources.resource_stream(__name__, 'stream-param-schema.yaml'))
+
+    def _stream_params_validate(stream_params):
+        try:
+            jsonschema.validate(stream_params, _stream_param_schema)
+        except jsonschema.ValidationError:
+            e,v,tb = sys.exc_info()
+            reraise(ValidationError, v, tb)
+except ImportError:
+    # TODO debug log this
+    def _stream_params_validate(stream_params):
+        pass
 
 class Anomaly:
     def __init__(self, module, watches=None, options=None):
@@ -30,17 +49,14 @@ class _rq_ctx:
             except (KeyError, ValueError):
                 pass
 
-def _noop(*args, **kwargs): pass
-
 class Client:
-    def __init__(self, server, apikey, stream_params_validate=_noop):
+    def __init__(self, server, apikey):
         self._server = server
         self._apikey = apikey
-        self._stream_params_validate = stream_params_validate
 
     def _stream(self, timeout=None, **stream_params):
         uri='{}/v1/sra/stream'.format(self._server)
-        self._stream_params_validate(stream_params)
+        _stream_params_validate(stream_params)
         with _rq_ctx():
             r = requests.post(uri, data=json.dumps(stream_params),
                     headers={ 'X-API-Key': self._apikey },

@@ -110,7 +110,7 @@ for line in c.rad(anomalies=[Anomaly('dns_match', ['dns=*.'], 'match=com')],
     msg = nmsg.message.from_json(line)
 ```
 
-While the distribution has several python dependencies, `axamd.client.Client` only depends on the Python requests module.  You can enable schema validation by importing `axamd.client.schema.stream_params_validate` and passing that as the `stream_params_validate` parameter to `Client`.  This adds depdencies on pyyaml and jsonschema.
+While the distribution has several python dependencies, `axamd.client.Client` only depends on the Python requests module.  Schema validation for parameters is enabled if the `PyYAML` and `jsonschema` modules are available.
 
 ## Protocol
 
