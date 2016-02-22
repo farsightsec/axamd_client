@@ -138,12 +138,12 @@ def main():
         elif args.channels:
             for result in client.sra(args.channels, args.watches,
                     timeout=timeout, **client_args):
-                print (result)
+                print (result, flush=True)
         elif args.anomaly:
             anomaly = Anomaly(args.anomaly[0], watches=args.watches,
                     options=' '.join(args.anomaly[1:]))
             for result in client.rad([anomaly], timeout=timeout, **client_args):
-                print (result)
+                print (result, flush=True)
         else:
             parser.error('Need channels and watches for SRA mode or anomaly for RAD mode')
     except Exception as e:
