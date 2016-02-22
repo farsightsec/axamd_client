@@ -162,7 +162,7 @@ error types
 
 * **URL**
 
-  `/v1/sra/anomalies`
+  `/v1/rad/anomalies`
 
 * **METHOD**
 
@@ -201,7 +201,7 @@ See Error Responses for more details.
 
   `wget --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
 
-### Stream
+### SRA Stream
 
 * **URL**
 
@@ -240,7 +240,48 @@ See Error Responses for more details.
 
   `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=example.com" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
 
+### RAD Stream
+
+* **URL**
+
+  `/v1/rad/stream`
+
+* **METHOD**
+
+  `POST`
+
+* **Data Params**
+
+ref json schema axamd/client/stream-param-schema.yaml
+
+ref AXA Watch Format
+
+
+* **Successs Response:**
+
+ref Stream Output Formats
+
+* **Error Response:**
+
+| Error type | Reason |
+| --- | --- |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response. |
+| `missing-api-key` | The X-API-Key header was not provided. |
+| `invalid-api-key` | The API key provided does not exist. |
+| `broken-api-key` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `bad-request` | Unable to parse request.  See the reason field in the response for details. |
+
+See Error Responses for more details.
+
+* **Sample Call:**
+
+  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
+
+  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=example.com" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
+
 ### AXA JSON Messages
+
+ref [AXA json schema][axamd/client/axa-json-schema.yaml]
 
 ### Error Responses
 
