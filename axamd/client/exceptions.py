@@ -14,13 +14,23 @@
 
 import itertools
 
-class AXAMDException(Exception): pass
-class ValidationError(AXAMDException): pass
+class AXAMDException(Exception):
+    'Any exception raised by axamd.client.'
+
+class ValidationError(AXAMDException):
+    'Raised when query parameters fail to validate per the method\'s schema'
 
 class ProblemDetails(AXAMDException):
-    """
-    Implementation of draft-ietf-appsawg-http-problem-03
-    """
+    '''
+    Details of a HTTP Problem report.
+
+    This is an implementation of draft-ietf-appsawg-http-problem-03.
+    All problem reports will contain the keys 'status', 'type' and 'title.'
+    Some will contain 'details' and 'instance.'  All are defined per the
+    referenced draft.  Some problem reports will contain additional keys
+    with data to help diagnose an issue.  Please see README.md in the
+    axamd.client source tree for further documentation.
+    '''
     def __init__(self, problem):
         self.message = problem['title']
         super(ProblemDetails, self).__init__(self.message)

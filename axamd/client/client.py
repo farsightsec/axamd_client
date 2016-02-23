@@ -12,6 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+'''
+Client for the Farsight Advanced Exchange Access (AXA) RESTful Interface
+
+The Farsight AXA RESTful Interface adds a streaming HTTP interface on
+top of the [AXA toolkit](https://www.github.com/farsightsec/axa) to
+enable developers of web-based applications to interface with Farsight's
+SRA (SIE Remote Access) and RAD (Realtime Anomaly Detector) servers.
+
+Example usage:
+
+```python
+from axamd.client import Client
+c = Client('https://axamd.sie-remote.net', apikey)
+for line in c.sra(channels=[212], watches=['ch=212']):
+    data = json.loads(line)
+```
+'''
+
 from .exceptions import ProblemDetails, ValidationError
 from .six_mini import reraise
 import requests
@@ -43,12 +61,25 @@ except ImportError:
     def _rad_stream_param_validate(instance): pass
 
 class Anomaly:
+    '''
+    The Anomaly module wraps the parameters and watches used to instantiate
+    a RAD anomaly module.
+    '''
     def __init__(self, module, watches=None, options=None):
+        '''
+        Args:
+            module (string): RAD anomaly module name
+            watches (list[string]): A list of watches for this anomaly module
+            options (string): Parameter string for the anomaly module
+        '''
         self.module = module
         self.watches = watches
         self.options = options
 
     def to_dict(self):
+        '''
+        Returns a dict that can be included in a parameter document.
+        '''
         d = { 'module': self.module }
         if self.watches:
             d['watches'] = self.watches
@@ -60,6 +91,7 @@ class Anomaly:
         return '{}{}: [{}]'.format(self.watches,
                 self.options and ' '+self.options or '', # prefix with space
                 ', '.join('[{}]'.format(w) for w in self.watches))
+
 class _rq_ctx:
     def __enter__(self): pass
     def __exit__(self, e, v, tb):
@@ -70,7 +102,13 @@ class _rq_ctx:
                 pass
 
 class Client:
+    __doc__ = __doc__
     def __init__(self, server, apikey):
+        '''
+        Args:
+            server (string): Server URI
+            apikey (string): API key
+        '''
         self._server = server
         self._apikey = apikey
 
@@ -93,12 +131,51 @@ class Client:
             return r.json()
 
     def sra(self, channels=[], watches=[], **params):
+        '''
+        Requests streaming data from the SRA server.  Tags for watches are
+        automatically assigned based on 1 + offset.  Output can be in either
+        axa format (default) or nmsg format, the latter of which can be
+        directly loaded with nmsg.message.from_json.
+
+        Args:
+            channels (list[int]): Channel numbers to enable
+            watches (list[string]): Watch strings
+            sample_rate (float (0..1]): Sampling rate for the SRA server.
+            rate_limit (int): Maximum watch hits per second.
+            report_interval (int): Seconds between statistics messages.
+            output_format (str): One of 'axa+json', or 'nmsg+json'.
+            timeout (float): Socket timeout.
+        Returns:
+            iterator returning strings formatted per output_format
+        Raises:
+            ProblemDetails
+            ValidationError
+        '''
         uri='{}/v1/sra/stream'.format(self._server)
         return self._stream(uri,
                 validate=_sra_stream_param_validate,
                 channels=channels, watches=watches, **params)
 
     def rad(self, anomalies=[], **params):
+        '''
+        Requests streaming data from the RAD server.  Tags for watches are
+        automatically assigned based on 1 + offset.  Output can be in either
+        axa format (default) or nmsg format, the latter of which can be
+        directly loaded with nmsg.message.from_json.
+
+        Args:
+            anomalies (list[Anomaly]): Anomaly objects
+            sample_rate (float (0..1]): Sampling rate for the SRA server.
+            rate_limit (int): Maximum watch hits per second.
+            report_interval (int): Seconds between statistics messages.
+            output_format (str): One of 'axa+json', or 'nmsg+json'.
+            timeout (float): Socket timeout.
+        Returns:
+            iterator returning strings formatted per output_format
+        Raises:
+            ProblemDetails
+            ValidationError
+        '''
         uri='{}/v1/rad/stream'.format(self._server)
         return self._stream(uri,
                 validate=_rad_stream_param_validate,
@@ -106,9 +183,27 @@ class Client:
                 **params)
 
     def list_channels(self, timeout=None):
+        '''
+        Requests the list of available channels from the SRA server.
+        Returns a dictionary mapping channel names (ch#) to descriptions.
+
+        Args:
+            timeout (float): Socket timeout.
+        Raises:
+            ProblemDetails
+        '''
         uri='{}/v1/sra/channels'.format(self._server)
         return self._get(uri, timeout=timeout)
 
     def list_anomalies(self, timeout=None):
+        '''
+        Requests the list of available anomalie modules from the RAD server.
+        Returns a dictionary mapping anomaly module names to descriptions.
+
+        Args:
+            timeout (float): Socket timeout.
+        Raises:
+            ProblemDetails
+        '''
         uri='{}/v1/rad/anomalies'.format(self._server)
         return self._get(uri, timeout=timeout)

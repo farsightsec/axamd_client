@@ -18,5 +18,5 @@ __all__ = ['client', 'Client',
         'anomaly', 'Anomaly',
         'exceptions', 'AXAMDException', 'ValidationError', 'ProblemDetails']
 
-from .client import Anomaly, Client
+from .client import Anomaly, Client, __doc__
 from .exceptions import AXAMDException, ValidationError, ProblemDetails
