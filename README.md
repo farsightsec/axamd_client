@@ -230,7 +230,7 @@ See Error Responses for more details.
 
 * **Data Params**
 
-ref json schema axamd/client/stream-param-schema.yaml
+ref json schema axamd/client/sra-stream-param-schema.yaml
 
 ref AXA Watch Format
 
@@ -269,7 +269,7 @@ See Error Responses for more details.
 
 * **Data Params**
 
-ref json schema axamd/client/stream-param-schema.yaml
+ref json schema axamd/client/rad-stream-param-schema.yaml
 
 ref AXA Watch Format
 

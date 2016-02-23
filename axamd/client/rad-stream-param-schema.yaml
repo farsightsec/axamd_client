@@ -7,23 +7,10 @@ definitions:
         watch:
                 type: string
                 oneOf:
-                        - pattern: '^ch=[0-9]+$'
                         - pattern: '^ip=[0-9:]+(/[0-9]+)?$'
                         - pattern: '^dns=(\*\.|(\*\.)?[a-z0-9-\.]+)$'
                         - pattern: '^errors$'
 properties:
-        channels:
-                type: array
-                items:
-                        type: integer
-                        minimum: 1
-                        maximum: 255
-                minItems: 1
-        watches:
-                type: array
-                items:
-                        $ref: "#/definitions/watch"
-                minItems: 1
         anomalies:
                 type: array
                 items:
@@ -58,18 +45,5 @@ properties:
                         - pattern: '^axa\+json$'
                         - pattern: '^nmsg\+json$'
                         - pattern: '^nmsg\+binary$'
-oneOf:
-        - required:
-                - channels
-                - watches
-          not:
-                  required:
-                         - anomalies
-        - required:
-                 - anomalies
-          not:
-                  anyOf:
-                          - required:
-                                 - watches
-                          - required:
-                                 - channels
+required:
+         - anomalies

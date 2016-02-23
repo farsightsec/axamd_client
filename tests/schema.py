@@ -92,10 +92,16 @@ class TestClientConfigSchema(TestSchema, unittest.TestCase):
         self._test_integer('report-interval', minimum=1)
 
 
-class TestStreamParamSchema(TestSchema, unittest.TestCase):
+class TestSRAStreamParamSchema(TestSchema, unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.load_schema('axamd.client', 'stream-param-schema.yaml')
+        cls.load_schema('axamd.client', 'sra-stream-param-schema.yaml')
+
+
+class TestRADStreamParamSchema(TestSchema, unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.load_schema('axamd.client', 'rad-stream-param-schema.yaml')
 
 
 class TestChannelsOutputSchema(TestSchema, unittest.TestCase):

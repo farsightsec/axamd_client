@@ -9,18 +9,24 @@ try:
     import jsonschema
     import sys
 
-    _stream_param_schema = yaml.safe_load(pkg_resources.resource_stream(__name__, 'stream-param-schema.yaml'))
+    _sra_stream_param_schema = yaml.safe_load(pkg_resources.resource_stream(__name__, 'sra-stream-param-schema.yaml'))
+    _rad_stream_param_schema = yaml.safe_load(pkg_resources.resource_stream(__name__, 'rad-stream-param-schema.yaml'))
 
-    def _stream_params_validate(stream_params):
-        try:
-            jsonschema.validate(stream_params, _stream_param_schema)
-        except jsonschema.ValidationError:
-            e,v,tb = sys.exc_info()
-            reraise(ValidationError, v, tb)
+    def _gen_validate(schema):
+        def _validate(instance):
+            try:
+                jsonschema.validate(instance, schema)
+            except jsonschema.ValidationError:
+                e,v,tb = sys.exc_info()
+                reraise(ValidationError, v, tb)
+        return _validate
+
+    _sra_stream_param_validate = _gen_validate(_sra_stream_param_schema)
+    _rad_stream_param_validate = _gen_validate(_rad_stream_param_schema)
 except ImportError:
     # TODO debug log this
-    def _stream_params_validate(stream_params):
-        pass
+    def _sra_stream_param_validate(instance): pass
+    def _rad_stream_param_validate(instance): pass
 
 class Anomaly:
     def __init__(self, module, watches=None, options=None):
@@ -54,8 +60,9 @@ class Client:
         self._server = server
         self._apikey = apikey
 
-    def _stream(self, uri, timeout=None, **stream_params):
-        _stream_params_validate(stream_params)
+    def _stream(self, uri, validate=None, timeout=None, **stream_params):
+        if validate:
+            validate(stream_params)
         with _rq_ctx():
             r = requests.post(uri, data=json.dumps(stream_params),
                     headers={ 'X-API-Key': self._apikey },
@@ -73,11 +80,15 @@ class Client:
 
     def sra(self, channels=[], watches=[], **params):
         uri='{}/v1/sra/stream'.format(self._server)
-        return self._stream(uri, channels=channels, watches=watches, **params)
+        return self._stream(uri,
+                validate=_sra_stream_param_validate,
+                channels=channels, watches=watches, **params)
 
     def rad(self, anomalies=[], **params):
         uri='{}/v1/rad/stream'.format(self._server)
-        return self._stream(uri, anomalies=[a.to_dict() for a in anomalies],
+        return self._stream(uri,
+                validate=_rad_stream_param_validate,
+                anomalies=[a.to_dict() for a in anomalies],
                 **params)
 
     def list_channels(self, timeout=None):
