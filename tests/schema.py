@@ -165,4 +165,4 @@ def gen_test_yaml(s):
         jsonschema.validate(yaml.safe_load(s), self.__class__.schema)
     return test_yaml_string
 for s in axa_json_strings:
-    setattr(TestAXAJSONSchema, 'test_schema({})'.format(s), gen_test_yaml(s))
+    setattr(TestAXAJSONSchema, 'test_validate({})'.format(s), gen_test_yaml(s))
