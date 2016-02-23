@@ -120,7 +120,8 @@ for line in c.sra(channels=[212], watches=['ch=212']):
 
 import nmsg
 
-for line in c.rad(anomalies=[Anomaly('dns_match', ['dns=*.'], 'match=foobar')],
+# detect the string "mail" anywhere in the DNS label hierarchy
+for line in c.rad(anomalies=[Anomaly('dns_match', ['dns=*.'], 'match=mail')],
         output_format='nmsg+json'):
     msg = nmsg.message.from_json(line)
 ```
@@ -255,7 +256,7 @@ See Error Responses for more details.
 
   `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
-  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=foobar" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
+  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
 ### RAD Stream
 
@@ -294,7 +295,7 @@ See Error Responses for more details.
 
   `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
-  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=foobar" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
+  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
 ### AXA JSON Messages
 
