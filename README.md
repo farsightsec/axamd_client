@@ -1,41 +1,47 @@
-# Farsight Advanced Exchange Access RESTful Interface
-
-The purpose of Farsight's Advanced Exchange Access (AXA) toolkit is to bring
-the capabilities of the Farsight Security Information Exchange (SIE) right to
-the subscriber's network edge rather than requiring a direct connection to the
-SIE.
+# Farsight Advanced Exchange Access (AXA) RESTful Interface
 
 The Farsight AXA RESTful Interface adds a streaming HTTP interface on top of the
-AXA toolkit to enable developers of web-based applications to interface 
-with Farsight's SRA (SIE Remote Access) and RAD (Realtime Anomaly Detector)
-servers.
-
-SRA and RAD services are delivered via Farsight's RESTful AXA protocol which
-allows session initiators to control a number of parameters including:
-
- * select SIE channels (SRA)
- * specify DNS and IP address watch patterns (SRA and RAD)
- * control packet rate limits and sampling rate
- * set anomaly watches and specify anomaly modules (RAD)
+[AXA toolkit](https://www.github.com/farsightsec/axa) to enable developers of
+web-based applications to interface with Farsight's SRA (SIE Remote Access)
+and RAD (Realtime Anomaly Detector) servers.
 
 Access is controlled via an API key that is passed as the `X-API-Key` HTTP
 header.
 
 ## SIE Remote Access (SRA)
 
+SRA is Farsight Security's bespoke remote access service. It provides an
+interface to access the Security Information Exchange (SIE) through an
+encrypted tunnel. More detail can be found 
+[here](https://www.github.com/farsightsec/axa).
+
 ## Realtime Anomaly Detector (RAD)
+
+RAD is the daughter service to SRA offering custom server-side filtering of SIE
+data through the use of in-house developed "RAD Modules". Through RAD,
+customers will have access complex filtering modules that provide services like
+real-time detection of DNS record corruption and brand infringement campaigns.
 
 ## AXA Watch Format
 
 | Watch Type | Syntax | Notes |
 | --- | --- | --- |
-| Channel | `ch=<#>` | SIE channel number. Not supported in RAD mode. |
-| IP Address | `ip=<ipv4 or ipv6 literal>` | In CIDR notation |
-| Domain Name | `dns=<domain>` | Supports wildcards `*.` or `*.example.com` |
+| Channel | `ch=<#>` | Enable "all watch" for specified SIE channel number. Not supported in RAD mode. |
+| IP Address | `ip=<ipv4 or ipv6 literal>` | Watch IP-based SIE traffic containing specified IP address. In CIDR notation |
+| Domain Name | `dns=<domain>` | Watch DNS-based SIE traffic containing specified domain name. Supports wildcards such as `*.` or `*.example.com`, but not `www.*` or `*.host.*` |
 
 ## Python Reference Implementation
+Install `axamd_client` as per the following:
 
-* Python setup.py install.  A full-featured client is installed as `axamd_client`.  You may configure the client using /etc/axamd-client.conf, ~/.axamd-client.conf, or any file you specify on the command line.  You may forego this and use only command line options if you prefer.  Configuration files are YAML or JSON objects.  Allowable keys are:
+```
+# python setup.py install
+```
+
+A full-featured client is installed as `axamd_client`.  You may configure the
+client using `/etc/axamd-client.conf`, `~/.axamd-client.conf`, or any file you
+specify on the command line.  You may forego this and use only command line
+options if you prefer.  Configuration files are YAML or JSON objects.
+Allowable keys are:
 
 | Option | Type | Description |
 | --- | --- | --- |
@@ -44,11 +50,11 @@ header.
 | `timeout` | number | Socket timeout in seconds |
 | `sample-rate` | number | Channel sampling rate (percent) |
 | `rate-limit` | integer | Maximum packets per second |
-| `report-interval` | integer | Seconds between server statistics messages |
+| `report-interval` | integer | Seconds between emission of server accounting messages (packet statistics) |
 
 See [client-config-schema.yaml](axamd/client/client-config-schema.yaml) for more details.
 
-The client can be called from the command line as follows:
+The client can be invoked from the command line as follows:
 
 ```
 usage: axamd_client [-h] [--config CONFIG] [--server SERVER] [--apikey APIKEY]
@@ -89,14 +95,23 @@ optional arguments:
 
 ```
 
-The client may also be used programmatically.  It is compatible with both Python 2 and Python 3.  The client raises axamd.ProblemDetails excepetions from server errors corresponding to the internet draft `draft-ietf-appsawg-http-problem-03`.  See `pydoc axamd.client.Client` for full details.  Example usage:
+The client may also be used programmatically.  It is compatible with both
+Python 2 and Python 3.  The client raises `axamd.ProblemDetails` excepetions
+from server errors corresponding to the internet draft
+[draft-ietf-appsawg-http-problem-03](https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03).  For full details, invoke:
+
+```
+$ pydoc axamd.client.Client
+```
+
+Example usage:
 
 ```python
 from axamd.client import Client, Anomaly
 import json
 
 apikey = '00000000-0000-0000-0000-00000000'
-c = Client('https://axamd.sie-network.net', apikey)
+c = Client('https://axamd.sie-remote.net', apikey)
 
 for line in c.sra(channels=[212], watches=['ch=212']):
     data = json.loads(line)
@@ -105,12 +120,14 @@ for line in c.sra(channels=[212], watches=['ch=212']):
 
 import nmsg
 
-for line in c.rad(anomalies=[Anomaly('dns_match', ['dns=*.'], 'match=com')],
+for line in c.rad(anomalies=[Anomaly('dns_match', ['dns=*.'], 'match=foobar')],
         output_format='nmsg+json'):
     msg = nmsg.message.from_json(line)
 ```
 
-While the distribution has several python dependencies, `axamd.client.Client` only depends on the Python requests module.  Schema validation for parameters is enabled if the `PyYAML` and `jsonschema` modules are available.
+While the distribution has several python dependencies, `axamd.client.Client`
+only depends on the Python requests module.  Schema validation for parameters
+is enabled if the `PyYAML` and `jsonschema` modules are available.
 
 ## Protocol
 
@@ -199,7 +216,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
+  `wget --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
 ### SRA Stream
 
@@ -236,9 +253,9 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
+  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
-  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=example.com" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
+  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=foobar" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
 ### RAD Stream
 
@@ -275,9 +292,9 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
+  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
-  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=example.com" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/anomalies`
+  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=foobar" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
 ### AXA JSON Messages
 
