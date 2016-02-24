@@ -254,9 +254,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
-
-  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
+  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/stream`
 
 ### RAD Stream
 
@@ -293,9 +291,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
-
-  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
+  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
 
 ### AXA JSON Messages
 
