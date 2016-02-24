@@ -24,11 +24,11 @@ real-time detection of DNS record corruption and brand infringement campaigns.
 
 ## AXA Watch Format
 
-| Watch Type | Syntax | Notes |
-| --- | --- | --- |
-| Channel | `ch=<#>` | Enable "all watch" for specified SIE channel number. Not supported in RAD mode. |
-| IP Address | `ip=<ipv4 or ipv6 literal>` | Watch IP-based SIE traffic containing specified IP address. In CIDR notation |
-| Domain Name | `dns=<domain>` | Watch DNS-based SIE traffic containing specified domain name. Supports wildcards such as `*.` or `*.example.com`, but not `www.*` or `*.host.*` |
+| Watch Type  | Syntax                      | Notes                                                                                                                                           |
+| ----------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Channel     | `ch=<#>`                    | Enable "all watch" for specified SIE channel number. Not supported in RAD mode.                                                                 |
+| IP Address  | `ip=<ipv4 or ipv6 literal>` | Watch IP-based SIE traffic containing specified IP address. In CIDR notation                                                                    |
+| Domain Name | `dns=<domain>`              | Watch DNS-based SIE traffic containing specified domain name. Supports wildcards such as `*.` or `*.example.com`, but not `www.*` or `*.host.*` |
 
 ## Python Reference Implementation
 Install `axamd_client` as per the following:
@@ -162,15 +162,15 @@ patternProperties:
 
 * **Error Response:**
 
-ref Error Responses
+| Error type              | Reason                                                                                    |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `missing-api-key`       | The X-API-Key header was not provided.                                                    |
+| `invalid-api-key`       | The API key provided does not exist.                                                      |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
-error types
-
-  * internal-server-error
-  * missing-api-key
-  * bad-api-key
-  * broken-api-key
-  * bad-request
+See Error Responses for more details.
 
 * **Sample Call:**
 
@@ -205,13 +205,13 @@ patternProperties:
 
 * **Error Response:**
 
-| Error type | Reason |
-| --- | --- |
-| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response. |
-| `missing-api-key` | The X-API-Key header was not provided. |
-| `invalid-api-key` | The API key provided does not exist. |
-| `broken-api-key` | An internal error has occurred.  Contact support, providing the logid from the response.  |
-| `bad-request` | Unable to parse request.  See the reason field in the response for details. |
+| Error type              | Reason                                                                                    |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `missing-api-key`       | The X-API-Key header was not provided.                                                    |
+| `invalid-api-key`       | The API key provided does not exist.                                                      |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
 See Error Responses for more details.
 
@@ -242,13 +242,13 @@ ref Stream Output Formats
 
 * **Error Response:**
 
-| Error type | Reason |
-| --- | --- |
-| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response. |
-| `missing-api-key` | The X-API-Key header was not provided. |
-| `invalid-api-key` | The API key provided does not exist. |
-| `broken-api-key` | An internal error has occurred.  Contact support, providing the logid from the response.  |
-| `bad-request` | Unable to parse request.  See the reason field in the response for details. |
+| Error type              | Reason                                                                                    |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `missing-api-key`       | The X-API-Key header was not provided.                                                    |
+| `invalid-api-key`       | The API key provided does not exist.                                                      |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
 See Error Responses for more details.
 
@@ -279,13 +279,13 @@ ref Stream Output Formats
 
 * **Error Response:**
 
-| Error type | Reason |
-| --- | --- |
-| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response. |
-| `missing-api-key` | The X-API-Key header was not provided. |
-| `invalid-api-key` | The API key provided does not exist. |
-| `broken-api-key` | An internal error has occurred.  Contact support, providing the logid from the response.  |
-| `bad-request` | Unable to parse request.  See the reason field in the response for details. |
+| Error type              | Reason                                                                                    |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `missing-api-key`       | The X-API-Key header was not provided.                                                    |
+| `invalid-api-key`       | The API key provided does not exist.                                                      |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
 See Error Responses for more details.
 
