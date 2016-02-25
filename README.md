@@ -465,41 +465,36 @@ containers.  It can be requested using `output_format=nmsg+binary`.
 
 ### Error Responses
 
-Per draft-ietf-appsawg-http-problem-03
-all responses have:
-  * `type`
-  * `title`
-  * `status`
-  * `logid`
+The AXA RESTful interface implements the IETF draft [draft-ietf-appsawg-http-problem-03](https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03)
+for all error responses.  All responses have the following fields:
 
-many responses have:
-  * `detail`
+| Field | Description |
+| --- | --- |
+| `type` | The problem type.  See below. |
+| `title` | Human-readable title. |
+| `detail` | Human-readable error details. (optional) |
+| `status` | HTTP status code. |
+| `logid` | UUID identifying this transaction in log messages. Provide this to support for all problem-related queries. |
 
-All types based `https://www.farsightsecurity.com/axamd/problems`
+#### Problem Types
 
-  * `internal-server-error`
-  * `missing-api-key`
-  * `bad-api-key`
-  * `broken-api-key`
-    * `api-key`
-  * `bad-request`
-    * `reason`
-  * `sra-not-enabled`
-  * `rad-not-enabled`
-  * `connection-error`
-  * `channel-not-found`
-    * `channel`
-  * `channel-error`
-    * `channel`
-  * `watch-error`
-    * `channel`
-    * `anomaly` (in rad mode)
-  * `anomaly-not-found`
-    * `anomaly`
-  * `anomaly-error`
-    * `anomaly`
-  * `rate-limit-error`
-    * `limit`
-    * `report-interval`
-  * `sample-rate-error`
-    * `rate`
+All problem types below have the URI base
+`https://www.farsightsecurity.com/axamd/problems`.  It is omitted for brevity.
+
+| Identifier | Description |
+| --- | --- |
+| `internal-server-error` | An internal error has occurred. Please contact support, providing the logid. |
+| `missing-api-key` | The X-API-Key header was not included in the request. |
+| `invalid-api-key` | The API Key is not provisioned. |
+| `broken-api-key` | An internal authentication error has occurred. Please contact support, providing the logid. Has an `api-key` field containing the damaged API key. |
+| `bad-request` | The request URI, method, or parameters are invalid.  See the `reason` field for an explanation. |
+| `sra-not-enabled` | SIE Remote Access is not enabled for this account. |
+| `rad-not-enabled` | Realtime Anomaly Detector is not enabled for this account. |
+| `connection-error` | There was an internal error connecting to the SRA or RAD server.  Please contact support, providing the logid. |
+| `channel-not-found` | The channel requested either does not exist or is not provisioned for this account. See the `channel` field for the channel number that caused the problem. |
+| `channel-error` | The SRA server returned an error when a channel was requested.  See `detail` for a human-readable error message and the `channel` field for which channel caused the error. |
+| `watch-error` | The SRA or RAD server returned an error when a watch was requested.  See `detail` for a human-readable error message. The `anomaly` field is populated in RAD mode with the anomaly module that the watch is connected with and the `watch` field for which watch caused the error. |
+| `anomaly-not-found` | The anomaly module requested either does not exist or is not provisioned for this account.  See the `anomaly` field for the anomaly module name that caused the problem. |
+| `anomaly-error` | The RAD server returned an error when an anomaly was requested.  See `detail` for a human-readable error message and `anomaly` for which anomaly module caused the error. |
+| `rate-limit-error` | The SRA or RAD server returned an error when setting the rate limit or report-interval.  See the `detail` field for a human-readable error message and the `limit` or `report-interval fields for the rate limit or report interval that caused the issue. |
+| `sample-rate-error` | The SRA or RAD server returned an error when setting the sample rate.  See `detail` for a human-readable error message. The invalid sample rate is included in the `rate` field. |
