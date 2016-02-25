@@ -400,7 +400,7 @@ RAD users.
 | `dropped` | integer | The number of packets dropped by SRA client-server congestion. |
 | `rlimit` | integer | The number of packets dropped by rate limiting. |
 | `filtered` | integer | The total number of packets considered. |
-| last\_report` | integer | The UNIX epoch of the previous report |
+| `last_report` | integer | The UNIX epoch of the previous report |
 
  * **WATCH HIT (nmsg)**
 
@@ -440,14 +440,14 @@ packet on an IP-only channel (such as the darknet channel).
 
 | Field Name | Type | Description |
 | --- | --- | --- |
-| `sra\_missed` | integer | The number of packets (SIE messages or raw IP packets) lost in the network between the source and the SRA server or dropped by the SRA server because it was too busy. |
-| `sra\_dropped` | integer | The number of packets dropped by SRA client-server congestion. |
-| `sra\_rlimit` | integer | The number of packets dropped by rate limiting by the SRA server. |
-| `sra\_filtered` | integer | The total number of packets considered by the SRA server. |
+| `sra_missed` | integer | The number of packets (SIE messages or raw IP packets) lost in the network between the source and the SRA server or dropped by the SRA server because it was too busy. |
+| `sra_dropped` | integer | The number of packets dropped by SRA client-server congestion. |
+| `sra_rlimit` | integer | The number of packets dropped by rate limiting by the SRA server. |
+| `sra_filtered` | integer | The total number of packets considered by the SRA server. |
 | `dropped` | integer | The number of packets dropped by RAD client-server congestion. |
 | `rlimit` | integer | The number of packets dropped by RAD rate limiting. |
 | `filtered` | integer | The total number of packets considered by RAD modules. |
-| `last\_report` | integer | The UNIX epoch of the previous report |
+| `last_report` | integer | The UNIX epoch of the previous report |
 
  * **Anomaly Hit**
 
