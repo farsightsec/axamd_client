@@ -101,7 +101,7 @@ from server errors corresponding to the internet draft
 [draft-ietf-appsawg-http-problem-03](https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03).  For full details, invoke:
 
 ```
-$ pydoc axamd.client.Client
+$ pydoc axamd.client
 ```
 
 Example usage:
@@ -131,6 +131,18 @@ only depends on the Python requests module.  Schema validation for parameters
 is enabled if the `PyYAML` and `jsonschema` modules are available.
 
 ## Protocol
+
+The Farsight AXA RESTful Interface consists of four methods.  Two of the
+methods, "Channel List" and "Anomaly List," are used to interrogate the server
+about which channels and anomaly modules the user is allowed to access.  The
+remaining methods, "SRA Stream" and "RAD Stream," stream line-delimited
+JSON (or binary nmsg container, if requested) data per JSON-encoded parameters
+sent in a POST request.
+
+The server reports problems using the protocol defined in the
+[Problem Reports for HTTP APIs](https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03)
+internet draft.  See the Error Responses section for a detailed listing of
+all problem codes.
 
 ### Channel List
 
@@ -293,9 +305,157 @@ See Error Responses for more details.
 
   `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
 
-### AXA JSON Messages
+### Stream Output Formats
 
-ref [AXA json schema][axamd/client/axa-json-schema.yaml]
+You may specify any of three output formats for the two stream commands.
+The default, `axa+json`, is the native AXA format and supports all messages.
+The two nmsg formats only support watch and anomaly hits and do not include
+status messages at this time.
+
+#### AXA JSON Messages
+
+This is the default message format.  Output consists of line-delimited,
+JSON-encoded AXA protocol strings.  It can be explicitly requested using
+the parameter `output_format=axa+json`.
+
+Each protocol message contains the following fields:
+
+| Field Name | Type | Description |
+| --- | --- | --- |
+| tag | "\*" or integer | Associates this message with a watch or anomaly module |
+| op | string | Specifies which type of message this is. |
+
+For tags, "\*" is for stateless messages, such as statistics. Otherwise, the
+tag number corresponds to the index of the watch or anomaly in the stream
+parameters, offset by one.
+
+The following example describes how watches are assigned for SRA streams:
+
+```json
+{
+   "watches": [
+       "ip=192.0.2.0/24",
+       "ip=198.51.100.0/24",
+   ]
+}
+```
+
+The watch `ip=192.0.2.0/24` is assigned tag 1 and the watch
+`ip=198.51.100.0/24` is assigned tag 2.
+
+The following example describes how watches are assigned for RAD streams:
+
+```json
+{
+    "anomalies": [
+        {
+           "module": "ip_probe",
+	   "watches": [
+	       "ip=192.0.2.0/24",
+	       "ip=198.51.100.0/24",
+	   ]
+        },
+        {
+           "module": "ip_probe",
+	   "watches": [
+	       "ip=203.0.113.0/24",
+	   ]
+        }
+    ]
+}
+```
+
+The watches `ip=192.0.2.0/24` and `ip=198.51.100.0/24` are assigned tag 1, and
+`ip=203.0.113.0/24` is assigned tag 2.
+
+There are four AXA op codes that are of interest to a user of the RESTful
+interface:  MISSED and WATCH HIT for SRA users, RAD MISSED and ANOMALY HIT for
+RAD users.
+
+ * **MISSED**
+
+| Field Name | Type | Description |
+| --- | --- | --- |
+| missed | integer | The number of packets (SIE messages or raw IP packets) lost in the network between the source and the SRA server or dropped by the SRA server because it was too busy. |
+| dropped | integer | The number of packets dropped by SRA client-server congestion. |
+| rlimit | integer | The number of packets dropped by rate limiting. |
+| filtered | integer | The total number of packets considered. |
+| last\_report | integer | The UNIX epoch of the previous report |
+
+ * **WATCH HIT (nmsg)**
+
+This is the watch hit that you will most often see.  It is fired when SRA
+matches your watch against a nmsg message.
+
+| Field Name | Type | Description |
+| --- | --- | --- |
+| `channel` | string | The channel number (ch#) on which this hit was observed. |
+| `nmsg` | object | The JSON-encoded nmsg object.  See NMSG JSON Messages. |
+| `field` or `field_idx` | string or integer | The nmsg field (or index)that triggered this watch hit. |
+| `val_idx` | integer | The value index within the nmsg field that triggered this watch hit. |
+| `vname` or `vid` | string or integer | The NMSG vendor name (or ID). |
+| `mname` or `msgtype` | string or integer | The NMSG module name (or ID). |
+| `time` | string | Timestamp when the NMSG message was reported. |
+
+ * **WATCH HIT (ip)**
+
+You will see this watch hit type when SRA matches your watch against an IP
+packet on an IP-only channel (such as the darknet channel).
+
+| Field Name | Type | Description |
+| --- | --- | --- |
+| `channel` | string | The channel number (ch#) on which this hit was observed. |
+| `af` | string or integer | The address family of `src` and `dst`. |
+| `src` | string | Source address. |
+| `dst` | string | Destination address. |
+| `ttl` | int | IP time to live. |
+| `payload` | string | base64-encoded packet payload. |
+| `proto` | string | Network protocol. |
+| `src_port` | integer | Network protocol src port. |
+| `dst_port` | integer | Network protocol dst port. |
+| `flags` | string | TCP flags. |
+| `time` | string | Timestamp when the IP packet was captured. |
+
+ * **RAD MISSED**
+
+| Field Name | Type | Description |
+| --- | --- | --- |
+| sra\_missed | integer | The number of packets (SIE messages or raw IP packets) lost in the network between the source and the SRA server or dropped by the SRA server because it was too busy. |
+| sra\_dropped | integer | The number of packets dropped by SRA client-server congestion. |
+| sra\_rlimit | integer | The number of packets dropped by rate limiting by the SRA server. |
+| sra\_filtered | integer | The total number of packets considered by the SRA server. |
+| dropped | integer | The number of packets dropped by RAD client-server congestion. |
+| rlimit | integer | The number of packets dropped by RAD rate limiting. |
+| filtered | integer | The total number of packets considered by RAD modules. |
+| last\_report | integer | The UNIX epoch of the previous report |
+
+ * **Anomaly Hit**
+
+Anomaly hits have all of the same fields of nmsg and IP watch hits, plus the
+following:
+
+| Field Name | Type | Description |
+| --- | --- | --- |
+| `an` | string | Module that detected the anomaly. |
+
+Please consult the [AXA json schema][axamd/client/axa-json-schema.yaml] for full
+details about every protocol message type. Please do not use this schema to
+validate input. It is very large and computationally expensive to validate.
+
+#### NMSG JSON Messages
+
+`output_format=nmsg+json`
+
+\*hit-nmsg only
+
+```python
+import nmsg
+message = nmsg.message.from_json(s)
+```
+
+#### NMSG Binary Messages
+
+`output_format=nmsg+binary`
 
 ### Error Responses
 
