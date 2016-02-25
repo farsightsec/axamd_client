@@ -12,8 +12,8 @@ header.
 
 SRA is Farsight Security's bespoke remote access service. It provides an
 interface to access the Security Information Exchange (SIE) through an
-encrypted tunnel. More detail can be found 
-[here](https://www.github.com/farsightsec/axa).
+encrypted tunnel. More detail can be found at the
+[AXA git repository](https://www.github.com/farsightsec/axa).
 
 ## Realtime Anomaly Detector (RAD)
 
