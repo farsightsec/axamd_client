@@ -444,23 +444,28 @@ validate input. It is very large and computationally expensive to validate.
 
 #### NMSG JSON Messages
 
-`output_format=nmsg+json`
+The `nmsg+json` output format is useful if you intend to use the AXA RESTful
+interface solely as a tranport protocol for nmsg messages.  Messages can be
+loaded directly using the `nmsg_message_from_json` function (or
+`nmsg.message.from_json` in Python). It is requested using the parameter
+`output_format=nmsg+json`.
 
-\*hit-nmsg only
-
-```python
-import nmsg
-message = nmsg.message.from_json(s)
-```
+| Field Name | Type | Description |
+| --- | --- | --- |
+| mname | string | Module name. |
+| vname | string | Vendor name. |
+| time | string | Time when the message was recorded. |
+| message | object | Module-specific fields. |
 
 #### NMSG Binary Messages
 
-`output_format=nmsg+binary`
+The `nmsg+binary` output format is plumbing for a future nmsg input type.  It
+is not intended for use at this time but its contents are serialized nmsg
+containers.  It can be requested using `output_format=nmsg+binary`.
 
 ### Error Responses
 
 Per draft-ietf-appsawg-http-problem-03
-
 all responses have:
   * `type`
   * `title`
