@@ -27,7 +27,7 @@ real-time detection of DNS record corruption and brand infringement campaigns.
 | Watch Type  | Syntax                      | Notes                                                                                                                                           |
 | ----------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Channel     | `ch=<#>`                    | Enable "all watch" for specified SIE channel number. Not supported in RAD mode.                                                                 |
-| IP Address  | `ip=<ipv4 or ipv6 literal>` | Watch IP-based SIE traffic containing specified IP address. In CIDR notation                                                                    |
+| IP Address  | `ip=<ipv4 or ipv6 literal>` | Watch IP-based SIE traffic containing specified IP address. In CIDR notation.                                                                   |
 | Domain Name | `dns=<domain>`              | Watch DNS-based SIE traffic containing specified domain name. Supports wildcards such as `*.` or `*.example.com`, but not `www.*` or `*.host.*` |
 
 ## Python Reference Implementation
