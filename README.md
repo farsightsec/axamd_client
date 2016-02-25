@@ -243,14 +243,23 @@ See Error Responses for more details.
 
 * **Data Params**
 
-ref json schema axamd/client/sra-stream-param-schema.yaml
+This method takes a JSON or YAML document conforming to the
+[SRA Stream Parameters JSON Schema](axamd/client/sra-stream-param-schema.yaml).
 
-ref AXA Watch Format
+| Field Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `channels` | array[integer] | Yes | Channel numbers to enable |
+| `watches` | array[string] | Yes | Watch strings |
+| `sample_rate` | number | No | Sampling rate (float over (0..1]) for the SRA server. |
+| `rate_limit` | integer | No | Maximum watch hits per second. |
+| `report_interval` | integer | No | Seconds between statistics messages. |
+| `output_format` | string | No |  One of `axa+json`, `nmsg+json`, or `nmsg+binary`. |
 
+See the AXA Watch Format for more details on watch syntax.
 
 * **Successs Response:**
 
-ref Stream Output Formats
+See the Stream Output Formats section.
 
 * **Error Response:**
 
@@ -280,14 +289,25 @@ See Error Responses for more details.
 
 * **Data Params**
 
-ref json schema axamd/client/rad-stream-param-schema.yaml
+This method takes a JSON or YAML document conforming to the
+[RAD Stream Parameters JSON Schema](axamd/client/rad-stream-param-schema.yaml).
 
-ref AXA Watch Format
+| Field Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `anomalies` | object(`module`, `watches`, `options`) | Yes | Anomaly module definitions. |
+| .. `module` | string | Yes | Anomaly module name. |
+| .. `watches` | array[string] | Yes | Watch strings |
+| .. `options` | string | No | Anomaly module options. |
+| `sample_rate` | number | No | Sampling rate (float over (0..1]) for the SRA server. |
+| `rate_limit` | integer | No | Maximum watch hits per second. |
+| `report_interval` | integer | No | Seconds between statistics messages. |
+| `output_format` | string | No |  One of `axa+json`, `nmsg+json`, or `nmsg+binary`. |
 
+See the AXA Watch Format for more details on watch syntax.
 
 * **Successs Response:**
 
-ref Stream Output Formats
+See the Stream Output Formats section.
 
 * **Error Response:**
 
