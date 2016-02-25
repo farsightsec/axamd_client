@@ -176,10 +176,10 @@ patternProperties:
 
 | Error type              | Reason                                                                                    |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
-| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `missing-api-key`       | The X-API-Key header was not provided.                                                    |
 | `invalid-api-key`       | The API key provided does not exist.                                                      |
-| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
 See Error Responses for more details.
@@ -219,10 +219,10 @@ patternProperties:
 
 | Error type              | Reason                                                                                    |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
-| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `missing-api-key`       | The X-API-Key header was not provided.                                                    |
 | `invalid-api-key`       | The API key provided does not exist.                                                      |
-| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
 See Error Responses for more details.
@@ -248,8 +248,8 @@ This method takes a JSON or YAML document conforming to the
 
 | Field Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `channels` | array[integer] | Yes | Channel numbers to enable |
-| `watches` | array[string] | Yes | Watch strings |
+| `channels` | array[integer] | Yes | Channel numbers to enable. |
+| `watches` | array[string] | Yes | Watch strings. |
 | `sample_rate` | number | No | Sampling rate (float over (0..1]) for the SRA server. |
 | `rate_limit` | integer | No | Maximum watch hits per second. |
 | `report_interval` | integer | No | Seconds between statistics messages. |
@@ -265,10 +265,10 @@ See the Stream Output Formats section.
 
 | Error type              | Reason                                                                                    |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
-| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `missing-api-key`       | The X-API-Key header was not provided.                                                    |
 | `invalid-api-key`       | The API key provided does not exist.                                                      |
-| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
 See Error Responses for more details.
@@ -313,10 +313,10 @@ See the Stream Output Formats section.
 
 | Error type              | Reason                                                                                    |
 | ----------------------- | ----------------------------------------------------------------------------------------- |
-| `internal-server-error` | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `internal-server-error` | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `missing-api-key`       | The X-API-Key header was not provided.                                                    |
 | `invalid-api-key`       | The API key provided does not exist.                                                      |
-| `broken-api-key`        | An internal error has occurred.  Contact support, providing the logid from the response.  |
+| `broken-api-key`        | An internal error has occurred.  Contact support, providing the `logid` from the response.  |
 | `bad-request`           | Unable to parse request.  See the reason field in the response for details.               |
 
 See Error Responses for more details.
@@ -345,9 +345,9 @@ Each protocol message contains the following fields:
 | tag | "\*" or integer | Associates this message with a watch or anomaly module |
 | op | string | Specifies which type of message this is. |
 
-For tags, "\*" is for stateless messages, such as statistics. Otherwise, the
+For tags, "\*" is for tagless messages, such as statistics. Otherwise, the
 tag number corresponds to the index of the watch or anomaly in the stream
-parameters, offset by one.
+parameters, plus one.
 
 The following example describes how watches are assigned for SRA streams:
 
@@ -400,7 +400,7 @@ RAD users.
 | `dropped` | integer | The number of packets dropped by SRA client-server congestion. |
 | `rlimit` | integer | The number of packets dropped by rate limiting. |
 | `filtered` | integer | The total number of packets considered. |
-| `last_report` | integer | The UNIX epoch of the previous report |
+| `last_report` | integer | The UNIX epoch of the previous report. |
 
  * **WATCH HIT (nmsg)**
 
@@ -433,8 +433,10 @@ packet on an IP-only channel (such as the darknet channel).
 | `proto` | string | Network protocol. |
 | `src_port` | integer | Network protocol src port. |
 | `dst_port` | integer | Network protocol dst port. |
-| `flags` | string | TCP flags. |
+| `flags` | array[string] | TCP flags. |
 | `time` | string | Timestamp when the IP packet was captured. |
+
+TCP flags are any of `SYN`, `FIN`, `ACK`, `RST`.
 
  * **RAD MISSED**
 
@@ -458,7 +460,7 @@ following:
 | --- | --- | --- |
 | `an` | string | Module that detected the anomaly. |
 
-Please consult the [AXA json schema][axamd/client/axa-json-schema.yaml] for full
+Please consult the [AXA json schema](axamd/client/axa-json-schema.yaml) for full
 details about every protocol message type. Please do not use this schema to
 validate input. It is very large and computationally expensive to validate.
 
@@ -472,10 +474,10 @@ loaded directly using the `nmsg_message_from_json` function (or
 
 | Field Name | Type | Description |
 | --- | --- | --- |
-| mname | string | Module name. |
-| vname | string | Vendor name. |
-| time | string | Time when the message was recorded. |
-| message | object | Module-specific fields. |
+| `mname` | string | Module name. |
+| `vname` | string | Vendor name. |
+| `time` | string | Time when the message was recorded. |
+| `message` | object | Module-specific fields. |
 
 #### NMSG Binary Messages
 
@@ -503,14 +505,14 @@ All problem types below have the URI base
 
 | Identifier | Description |
 | --- | --- |
-| `internal-server-error` | An internal error has occurred. Please contact support, providing the logid. |
+| `internal-server-error` | An internal error has occurred. Please contact support, providing the `logid`. |
 | `missing-api-key` | The X-API-Key header was not included in the request. |
 | `invalid-api-key` | The API Key is not provisioned. |
-| `broken-api-key` | An internal authentication error has occurred. Please contact support, providing the logid. Has an `api-key` field containing the damaged API key. |
+| `broken-api-key` | An internal authentication error has occurred. Please contact support, providing the `logid`. Has an `api-key` field containing the damaged API key. |
 | `bad-request` | The request URI, method, or parameters are invalid.  See the `reason` field for an explanation. |
 | `sra-not-enabled` | SIE Remote Access is not enabled for this account. |
 | `rad-not-enabled` | Realtime Anomaly Detector is not enabled for this account. |
-| `connection-error` | There was an internal error connecting to the SRA or RAD server.  Please contact support, providing the logid. |
+| `connection-error` | There was an internal error connecting to the SRA or RAD server.  Please contact support, providing the `logid`. |
 | `channel-not-found` | The channel requested either does not exist or is not provisioned for this account. See the `channel` field for the channel number that caused the problem. |
 | `channel-error` | The SRA server returned an error when a channel was requested.  See `detail` for a human-readable error message and the `channel` field for which channel caused the error. |
 | `watch-error` | The SRA or RAD server returned an error when a watch was requested.  See `detail` for a human-readable error message. The `anomaly` field is populated in RAD mode with the anomaly module that the watch is connected with and the `watch` field for which watch caused the error. |
