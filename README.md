@@ -96,7 +96,7 @@ optional arguments:
 ```
 
 The client may also be used programmatically.  It is compatible with both
-Python 2 and Python 3.  The client raises `axamd.ProblemDetails` excepetions
+Python 2 and Python 3.  The client raises `axamd.ProblemDetails` exceptions
 from server errors corresponding to the internet draft
 [draft-ietf-appsawg-http-problem-03](https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03).  For full details, invoke:
 
