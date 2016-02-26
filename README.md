@@ -8,21 +8,26 @@ and RAD (Realtime Anomaly Detector) servers.
 Access is controlled via an API key that is passed as the `X-API-Key` HTTP
 header.
 
-## SIE Remote Access (SRA)
+## Advanced Exchange Access (AXA)
+AXA is an in-house developed binary protocol for the real-time transit of
+Security Information Exchange (SIE) traffic.
 
-SRA is Farsight Security's bespoke remote access service. It provides an
-interface to access the Security Information Exchange (SIE) through an
-encrypted tunnel. More detail can be found at the
-[AXA git repository](https://www.github.com/farsightsec/axa).
+## SIE Remote Access (SRA)
+SRA is Farsight Security's bespoke remote access service for SIE traffic.
+It transits SIE datagrams through an encrypted tunnel to the customer's network.
+More detail including client tool and C library downloads can be found at
+the [AXA git repository](https://www.github.com/farsightsec/axa).
 
 ## Realtime Anomaly Detector (RAD)
-
-RAD is the daughter service to SRA offering custom server-side filtering of SIE
-data through the use of in-house developed "RAD Modules". Through RAD,
-customers will have access complex filtering modules that provide services like
-real-time detection of DNS record corruption and brand infringement campaigns.
+RAD is the daughter service to SRA offering custom, server-side filtering of
+SIE data through the use of in-house developed "RAD Modules". With RAD,
+customers have access to complex filtering modules that provide services
+like real-time detection of DNS record corruption and brand infringement
+campaigns. RAD toolware is also available at the [AXA git repository](https://www.github.com/farsightsec/axa).
 
 ## AXA Watch Format
+To signify interest in a particular SIE channel, IP address, or domain,
+AXA uses the concept of "watches". These are summarized below:
 
 | Watch Type  | Syntax                      | Notes                                                                                                                                           |
 | ----------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -345,7 +350,8 @@ Each protocol message contains the following fields:
 | tag | "\*" or integer | Associates this message with a watch or anomaly module |
 | op | string | Specifies which type of message this is. |
 
-For tags, "\*" is for tagless messages, such as statistics. Otherwise, the
+For [tags](https://github.com/farsightsec/axa#axa-message-header),
+"\*" is for tagless messages, such as statistics. Otherwise, the
 tag number corresponds to the index of the watch or anomaly in the stream
 parameters, plus one.
 
@@ -518,5 +524,5 @@ All problem types below have the URI base
 | `watch-error` | The SRA or RAD server returned an error when a watch was requested.  See `detail` for a human-readable error message. The `anomaly` field is populated in RAD mode with the anomaly module that the watch is connected with and the `watch` field for which watch caused the error. |
 | `anomaly-not-found` | The anomaly module requested either does not exist or is not provisioned for this account.  See the `anomaly` field for the anomaly module name that caused the problem. |
 | `anomaly-error` | The RAD server returned an error when an anomaly was requested.  See `detail` for a human-readable error message and `anomaly` for which anomaly module caused the error. |
-| `rate-limit-error` | The SRA or RAD server returned an error when setting the rate limit or report-interval.  See the `detail` field for a human-readable error message and the `limit` or `report-interval fields for the rate limit or report interval that caused the issue. |
+| `rate-limit-error` | The SRA or RAD server returned an error when setting the rate limit or report-interval.  See the `detail` field for a human-readable error message and the `limit` or `report-interval` fields for the rate limit or report interval that caused the issue. |
 | `sample-rate-error` | The SRA or RAD server returned an error when setting the sample rate.  See `detail` for a human-readable error message. The invalid sample rate is included in the `rate` field. |
