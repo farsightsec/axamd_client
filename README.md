@@ -52,6 +52,7 @@ Allowable keys are:
 | --- | --- | --- |
 | `server` | string | URI to AXAMD server |
 | `apikey` | string | Key for authentication |
+| `proxy` | string | HTTP proxy |
 | `timeout` | number | Socket timeout in seconds |
 | `sample-rate` | number | Channel sampling rate (percent) |
 | `rate-limit` | integer | Maximum packets per second |
@@ -63,7 +64,7 @@ The client can be invoked from the command line as follows:
 
 ```
 usage: axamd_client [-h] [--config CONFIG] [--server SERVER] [--apikey APIKEY]
-                 [--timeout TIMEOUT] [--rate-limit PPS]
+                 [--proxy PROXY] [--timeout TIMEOUT] [--rate-limit PPS]
                  [--report-interval SECONDS] [--sample-rate PERCENTAGE]
                  [--list-channels] [--list-anomalies]
                  [--channels [CHANNEL [CHANNEL ...]]]
@@ -80,6 +81,8 @@ optional arguments:
                         AXAMD server
   --apikey APIKEY, -k APIKEY
                         API key
+  --proxy PROXY, -p PROXY
+                        HTTP proxy
   --timeout TIMEOUT, -t TIMEOUT
                         Timeout for connections
   --rate-limit PPS, -l PPS
