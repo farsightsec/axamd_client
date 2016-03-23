@@ -20,3 +20,5 @@ __all__ = ['client', 'Client',
 
 from .client import Anomaly, Client, __doc__
 from .exceptions import AXAMDException, ValidationError, ProblemDetails
+
+__doc__ # make pyflakes happy
