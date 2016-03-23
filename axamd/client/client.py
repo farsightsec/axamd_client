@@ -103,7 +103,7 @@ class _rq_ctx:
 
 class Client:
     __doc__ = __doc__
-    def __init__(self, server, apikey):
+    def __init__(self, server, apikey, proxy=None):
         '''
         Args:
             server (string): Server URI
@@ -111,6 +111,10 @@ class Client:
         '''
         self._server = server
         self._apikey = apikey
+        self._proxies = {}
+        if proxy:
+            self._proxies['http'] = proxy
+            self._proxies['https'] = proxy
 
     def _stream(self, uri, validate=None, timeout=None, **stream_params):
         if validate:
@@ -118,6 +122,7 @@ class Client:
         with _rq_ctx():
             r = requests.post(uri, data=json.dumps(stream_params),
                     headers={ 'X-API-Key': self._apikey },
+                    proxies = self._proxies,
                     timeout=timeout, stream=True)
             r.raise_for_status()
             return r.iter_lines()
@@ -126,6 +131,7 @@ class Client:
         with _rq_ctx():
             r = requests.get(uri, 
                     headers={ 'X-API-Key': self._apikey },
+                    proxies = self._proxies,
                     timeout=timeout)
             r.raise_for_status()
             return r.json()

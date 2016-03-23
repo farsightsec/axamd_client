@@ -78,6 +78,7 @@ def main():
     parser.add_argument('--config', '-c', help='Path to config file')
     parser.add_argument('--server', '-s', help='AXAMD server')
     parser.add_argument('--apikey', '-k', help='API key')
+    parser.add_argument('--proxy', '-p', help='HTTP proxy')
     parser.add_argument('--timeout', '-t', type=float,
             help='Timeout for connections')
     parser.add_argument('--rate-limit', '-l', type=int, metavar='PPS',
@@ -107,6 +108,8 @@ def main():
         config['server'] = args.server
     if args.apikey:
         config['apikey'] = args.apikey
+    if args.proxy:
+        config['proxy'] = args.proxy
     if args.timeout:
         if args.timeout < 0:
             parser.error('Timeout must be a positive real number')
@@ -130,7 +133,8 @@ def main():
     if not (args.list_channels or args.list_anomalies or args.watches):
         parser.error('A watch list is required unless listing available channels or anomaly modules')
 
-    client = Client(server=config['server'], apikey=config['apikey'])
+    client = Client(server=config['server'], apikey=config['apikey'],
+            proxy=config.get('proxy'))
 
     timeout = config.get('timeout')
 

@@ -34,3 +34,8 @@ properties:
                 type: integer
                 minimum: 0
                 exclusiveMinimum: true
+        proxy:
+                description: HTTP proxy server
+                type: string
+                format: uri
+                minLength: 1
