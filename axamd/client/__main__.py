@@ -139,11 +139,11 @@ def main():
     timeout = config.get('timeout')
 
     client_args = {}
-    if 'rate_limit' in config:
+    if 'rate-limit' in config:
         client_args['rate_limit'] = config['rate-limit']
-    if 'report_interval' in config:
+    if 'report-interval' in config:
         client_args['report_interval'] = config['report-interval']
-    if 'sample_rate' in config:
+    if 'sample-rate' in config:
         client_args['sample_rate'] = config['sample-rate'] / 100
 
     try:
