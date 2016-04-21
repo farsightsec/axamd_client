@@ -129,7 +129,7 @@ for line in c.sra(channels=[212], watches=['ch=212']):
 import nmsg
 
 # detect the string "mail" anywhere in the DNS label hierarchy
-for line in c.rad(anomalies=[Anomaly('dns_match', ['dns=*.'], 'match=mail')],
+for line in c.rad(anomalies=[Anomaly('dns_watch', ['dns=*.'], 'watch=mail')],
         output_format='nmsg+json'):
     msg = nmsg.message.from_json(line)
 ```
@@ -209,7 +209,7 @@ See Error Responses for more details.
 * **Success Response:**
 
   **Code:** 200  
-  **Content:** `{ "dns_match": "Match DNS names anywhere in the DNS label hierarchy." }`
+  **Content:** `{ "dns_watch": "Watch for strings anywhere in the DNS label hierarchy." }`
 
 ```yaml
 id: http://farsightsecurity.com/axamd-anomalies-output-schema#
@@ -331,7 +331,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --data '{ "anomalies"={ "module"="dns_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
+  `wget --data '{ "anomalies"={ "module"="dns_watch", "watches"=["dns=*."], "options"="watch=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
 
 ### Stream Output Formats
 
