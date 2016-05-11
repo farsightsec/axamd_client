@@ -1,0 +1,31 @@
+Source: axamd-client
+Section: python
+Priority: optional
+Maintainer: Farsight Security, Inc. <software@farsightsecurity.com>
+Build-Depends:
+ debhelper (>= 8~),
+ python-all (>= 2.7),
+ python-setuptools,
+ python-pkg-resources,
+ python-axa,
+ python-jsonschema,
+ python-option-merge,
+ python-yaml,
+ python-requests,
+ pyflakes (>= 0.6)
+Standards-Version: 3.9.6
+X-Python-Version: 2.7
+
+Package: python-axamd-client
+Architecture: any
+Depends: ${misc:Depends}, ${python:Depends}, ${shlibs:Depends},
+ python-axa,
+ python-jsonschema,
+ python-option-merge,
+ python-yaml,
+ python-requests,
+ python-pkg-resources
+Recommends:
+ python-nmsg
+Description: network message encapsulation library (Python bindings)
+ This package contains the libaxa Python extension module.
