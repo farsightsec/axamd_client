@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name = 'axamd.client',
-    version = '0.0.0',
+    version = '1.0.0',
     author = 'Farsight Security, Inc.',
     author_email = 'software@farsightsecurity.com',
     url = 'https://github.com/farsightsec/axamd_client',

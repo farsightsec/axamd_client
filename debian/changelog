@@ -1,5 +1,5 @@
-axamd-client (0.0.0) debian-farsightsec; urgency=medium
+axamd-client (1.0.0) debian-farsightsec; urgency=medium
 
   * Initial release.
 
- -- Henry Stern <stern@fsi.io>  Wed, 11 May 2016 14:22:44 -0300
+ -- Henry Stern <stern@fsi.io>  Fri, 13 May 2016 19:39:52 -0300
