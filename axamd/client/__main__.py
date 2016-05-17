@@ -169,7 +169,7 @@ def main():
     except Exception as e:
         if args.debug:
             raise
-        print (e, file=sys.stderr)
+        print ('{}: {}'.format(e.__class__.__name__, e.message), file=sys.stderr)
         return 1
     return None
 
