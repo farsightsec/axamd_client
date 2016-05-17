@@ -30,7 +30,7 @@ for line in c.sra(channels=[212], watches=['ch=212']):
 ```
 '''
 
-from .exceptions import ProblemDetails, ValidationError
+from .exceptions import ProblemDetails, ValidationError, Timeout
 from .six_mini import reraise
 import requests
 import json
@@ -100,6 +100,8 @@ class _rq_ctx:
                 reraise(ProblemDetails, ProblemDetails(v.response.json()), tb)
             except (KeyError, ValueError):
                 pass
+        elif isinstance(v, requests.Timeout):
+            reraise(Timeout, Timeout(v), tb)
 
 class Client:
     __doc__ = __doc__

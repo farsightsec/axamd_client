@@ -17,6 +17,9 @@ import itertools
 class AXAMDException(Exception):
     'Any exception raised by axamd.client.'
 
+class Timeout(AXAMDException):
+    'Raised when a connection times out.'
+
 class ValidationError(AXAMDException):
     'Raised when query parameters fail to validate per the method\'s schema'
 
