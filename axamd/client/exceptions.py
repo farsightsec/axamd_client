@@ -36,6 +36,8 @@ class ProblemDetails(AXAMDException):
     '''
     def __init__(self, problem):
         self.message = problem['title']
+        if 'detail' in problem:
+            self.message = '{}: "{}"'.format(self.message, problem['detail'])
         super(ProblemDetails, self).__init__(self.message)
         self._problem = problem
 
