@@ -21,6 +21,7 @@ import os
 import sys
 
 from .client import Anomaly, Client
+from .exceptions import ProblemDetails
 import jsonschema
 import option_merge
 import pkg_resources
@@ -166,10 +167,15 @@ def main():
                 sys.stdout.flush()
         else:
             parser.error('Need channels and watches for SRA mode or anomaly for RAD mode')
-    except Exception as e:
+    except ProblemDetails as e:
         if args.debug:
             raise
         print ('{}: {}'.format(e.__class__.__name__, e.message), file=sys.stderr)
+        return 1
+    except Exception as e:
+        if args.debug:
+            raise
+        print ('{}: {}'.format(e.__class__.__name__, str(e)), file=sys.stderr)
         return 1
     return None
 
