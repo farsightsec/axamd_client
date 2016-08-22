@@ -24,6 +24,7 @@ Example usage:
 
 ```python
 from axamd.client import Client
+import json
 c = Client('https://axamd.sie-remote.net', apikey)
 for line in c.sra(channels=[212], watches=['ch=212']):
     data = json.loads(line)

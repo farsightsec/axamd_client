@@ -35,6 +35,15 @@ AXA uses the concept of "watches". These are summarized below:
 | IP Address  | `ip=<ipv4 or ipv6 literal>` | Watch IP-based SIE traffic containing specified IP address. In CIDR notation.                                                                   |
 | Domain Name | `dns=<domain>`              | Watch DNS-based SIE traffic containing specified domain name. Supports wildcards such as `*.` or `*.example.com`, but not `www.*` or `*.host.*` |
 
+Examples:
+
+| Watch | Description |
+| ----- | ----------- |
+| `ch=212` | All messages on channel 212. |
+| `ip=198.51.100.0/24` | All messages referencing `TEST-NET-2`. |
+| `dns=*.example.com.` | All messages matching `*.example.com`. |
+| `dns=*.` | All messages with domain names. |
+
 ## Python Reference Implementation
 Install `axamd_client` as per the following:
 
@@ -103,6 +112,12 @@ optional arguments:
 
 ```
 
+Example usage:
+
+```bash
+axamd_client --channels 204 --watches dns=farsightsecurity.com.
+```
+
 The client may also be used programmatically.  It is compatible with both
 Python 2 and Python 3.  The client raises `axamd.ProblemDetails` exceptions
 from server errors corresponding to the internet draft
@@ -137,6 +152,10 @@ for line in c.rad(anomalies=[Anomaly('string_match', ['dns=*.'], 'match=mail')],
 While the distribution has several python dependencies, `axamd.client.Client`
 only depends on the Python requests module.  Schema validation for parameters
 is enabled if the `PyYAML` and `jsonschema` modules are available.
+
+`nmsg` is a Python module published by Farsight Security.  See our
+[software installation instructions](https://www.farsightsecurity.com/Technical/SIE_Installation/)
+for more details.
 
 ## Protocol
 
@@ -194,7 +213,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/channels`
+  `curl --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/channels`
 
 ### Anomaly List
 
@@ -237,7 +256,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
+  `curl --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/anomalies`
 
 ### SRA Stream
 
@@ -283,7 +302,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --data '{ "channels"=[212], "watches"=["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/stream`
+  `curl --data '{ "channels": [212], "watches": ["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/stream`
 
 ### RAD Stream
 
@@ -331,7 +350,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `wget --data '{ "anomalies"={ "module"="string_match", "watches"=["dns=*."], "options"="match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
+  `curl --data '{ "anomalies": { "module": "string_match", "watches": ["dns=*."], "options": "match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
 
 ### Stream Output Formats
 
