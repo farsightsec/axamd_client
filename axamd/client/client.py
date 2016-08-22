@@ -31,10 +31,11 @@ for line in c.sra(channels=[212], watches=['ch=212']):
 ```
 '''
 
+import json
+
 from .exceptions import ProblemDetails, ValidationError, Timeout
 from .six_mini import reraise
 import requests
-import json
 
 try:
     import pkg_resources

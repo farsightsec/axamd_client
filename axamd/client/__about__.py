@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__import__('pkg_resources').declare_namespace(__name__)
-
-__all__ = ['client', 'Client',
-        'anomaly', 'Anomaly',
-        'exceptions', 'AXAMDException', 'ValidationError', 'ProblemDetails',
-        '__title__', '__description__', '__version__',
+__all__ = [
+        '__title__', '__version__', '__description__',
         '__author__', '__author_email__',
         '__uri__', '__license__', '__copyright__', '__classifiers__',
         ]
 
-from .__about__ import (__title__, __version__, __description__,
-        __author__, __author_email__,
-        __uri__, __license__, __copyright__, __classifiers__,
-        )
-from .client import Anomaly, Client, __doc__
-from .exceptions import AXAMDException, ValidationError, ProblemDetails
-
-__doc__ # make pyflakes happy
+__title__ = 'axamd.client'
+__version__ = '1.0.0'
+__description__ = 'Farsight Advanced Exchange Access (AXA) RESTful API Client'
+__author__ = 'Farsight Security, Inc.'
+__author_email__ = 'software@farsightsecurity.com'
+__uri__ = 'https://github.com/farsightsec/axamd_client'
+__license__ = 'Apache License, Version 2.0'
+__copyright__ = 'Copyright 2016 {}'.format(__author__)
+__classifiers__ = [
+    'License :: OSI Approved :: Apache Software License',
+]

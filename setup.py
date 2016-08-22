@@ -14,17 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from setuptools import setup
 
+base_dir = os.path.dirname(__file__)
+about = {}
+with open(os.path.join(base_dir, 'axamd', 'client', '__about__.py')) as f:
+    exec(f.read(), about)
+
 setup(
-    name = 'axamd.client',
-    version = '1.0.0',
-    author = 'Farsight Security, Inc.',
-    author_email = 'software@farsightsecurity.com',
-    url = 'https://github.com/farsightsec/axamd_client',
-    classifiers = [
-        'License :: OSI Approved :: Apache Software License',
-    ],
+    name = about['__title__'],
+    description = about['__description__'],
+    version = about['__version__'],
+    author = about['__author__'],
+    author_email = about['__author_email__'],
+    url = about['__uri__'],
+    classifiers = about['__classifiers__'],
+    license = about['__license__'],
+
     packages = ['axamd','axamd.client'],
     namespace_packages = ['axamd'],
     package_data = {
