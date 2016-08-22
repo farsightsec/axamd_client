@@ -32,7 +32,9 @@ for line in c.sra(channels=[212], watches=['ch=212']):
 '''
 
 import json
+import platform
 
+from . import __version__
 from .exceptions import ProblemDetails, ValidationError, Timeout
 from .six_mini import reraise
 import requests
@@ -106,6 +108,9 @@ class _rq_ctx:
             reraise(Timeout, Timeout(v), tb)
 
 class Client:
+    user_agent = 'axamd.client/v{} {}/{} {}'.format(__version__,
+            platform.python_implementation(), platform.python_version(),
+            platform.platform())
     __doc__ = __doc__
     def __init__(self, server, apikey, proxy=None):
         '''
@@ -125,7 +130,10 @@ class Client:
             validate(stream_params)
         with _rq_ctx():
             r = requests.post(uri, data=json.dumps(stream_params),
-                    headers={ 'X-API-Key': self._apikey },
+                    headers={
+                        'X-API-Key': self._apikey,
+                        'User-Agent': Client.user_agent,
+                        },
                     proxies = self._proxies,
                     timeout=timeout, stream=True)
             r.raise_for_status()
@@ -134,7 +142,10 @@ class Client:
     def _get(self, uri, timeout=None):
         with _rq_ctx():
             r = requests.get(uri, 
-                    headers={ 'X-API-Key': self._apikey },
+                    headers={
+                        'X-API-Key': self._apikey,
+                        'User-Agent': Client.user_agent,
+                        },
                     proxies = self._proxies,
                     timeout=timeout)
             r.raise_for_status()
