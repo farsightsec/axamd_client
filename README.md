@@ -350,7 +350,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `curl --data '{ "anomalies": { "module": "string_match", "watches": ["dns=*."], "options": "match=www" } }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
+  `curl --data '{ "anomalies": [{ "module": "string_match", "watches": ["dns=*."], "options": "match=www" }] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
 
 ### Stream Output Formats
 
