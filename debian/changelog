@@ -1,3 +1,20 @@
+axamd-client (1.1.0) debian-farsightsec; urgency=medium
+
+  * [d84221fb] axamd.client: Add Timeout exception, reraise requests.Timeout
+  * [ec7bde42] axamd.client.__main__: Print the exception class that was raised
+  * [d32a436c] *-stream-param-schema.yaml: add missing dot to valid IPs
+  * [3464daee] sra,rad-stream-param-schema.yaml: accept hex digits in ipv6 watches
+  * [50ecbbf3] exceptions: add problem[detail] to ProblemDetails.message when available
+  * [ed58611d] main: decode raw bytes to utf-8 for printing in python3
+  * [ed4d75d0] main: use str(e) instead of e.message for python3 compatibility with exceptions
+  * [d6746e1d] main: switch from sys.stdout.write to print for anomaly mode
+  * [2d0dad9a] README.md, axamd.client: Correct and expand examples in documentation
+  * [741dcc29] __about__: refactor metadata from setup.py to __about__.py
+  * [66db4cce] axamd.client: Set User-Agent
+  * [60b7ec6c] README: add missing brackets to v1/rad example
+
+ -- Henry Stern <stern@fsi.io>  Tue, 20 Sep 2016 13:50:49 -0300
+
 axamd-client (1.0.0) debian-farsightsec; urgency=medium
 
   * Initial release.
