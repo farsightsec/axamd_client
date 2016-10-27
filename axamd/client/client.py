@@ -218,7 +218,7 @@ class Client:
 
     def list_anomalies(self, timeout=None):
         '''
-        Requests the list of available anomalie modules from the RAD server.
+        Requests the list of available anomaly modules from the RAD server.
         Returns a dictionary mapping anomaly module names to descriptions.
 
         Args:

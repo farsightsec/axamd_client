@@ -284,7 +284,7 @@ This method takes a JSON or YAML document conforming to the
 
 See the AXA Watch Format for more details on watch syntax.
 
-* **Successs Response:**
+* **Success Response:**
 
 See the Stream Output Formats section.
 
@@ -332,7 +332,7 @@ This method takes a JSON or YAML document conforming to the
 
 See the AXA Watch Format for more details on watch syntax.
 
-* **Successs Response:**
+* **Success Response:**
 
 See the Stream Output Formats section.
 
@@ -495,7 +495,7 @@ validate input. It is very large and computationally expensive to validate.
 #### NMSG JSON Messages
 
 The `nmsg+json` output format is useful if you intend to use the AXA RESTful
-interface solely as a tranport protocol for nmsg messages.  Messages can be
+interface solely as a transport protocol for nmsg messages.  Messages can be
 loaded directly using the `nmsg_message_from_json` function (or
 `nmsg.message.from_json` in Python). It is requested using the parameter
 `output_format=nmsg+json`.
