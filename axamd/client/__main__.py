@@ -110,6 +110,8 @@ def main():
         config['server'] = args.server
     if args.apikey:
         config['apikey'] = args.apikey
+    if not config['apikey']:
+        parser.error('API key is not set')
     if args.proxy:
         config['proxy'] = args.proxy
     if args.timeout:
