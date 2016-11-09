@@ -137,7 +137,7 @@ class Client:
                     proxies = self._proxies,
                     timeout=timeout, stream=True)
             r.raise_for_status()
-            return r.iter_lines()
+            return (line.lstrip('\x1e') for line in r.iter_lines())
 
     def _get(self, uri, timeout=None):
         with _rq_ctx():

@@ -166,6 +166,14 @@ remaining methods, "SRA Stream" and "RAD Stream," stream line-delimited
 JSON (or binary nmsg container, if requested) data per JSON-encoded parameters
 sent in a POST request.
 
+Responses are encoded as JSON Text Sequences per
+[RFC 7464](https://tools.ietf.org/html/rfc7464). Each JSON text is preceded
+by one record separator character (ASCII `0x1e`) and succeeded by one
+line break character (ASCII `0x20`). In addition, AXAMD's implementation of
+RFC 7464 does not include line breaks within JSON texts so clients may
+use the line break character as the termination of the record and do not
+need to wait to receive a record separator.
+
 The server reports problems using the protocol defined in the
 [Problem Reports for HTTP APIs](https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03)
 internet draft.  See the Error Responses section for a detailed listing of
@@ -510,8 +518,9 @@ loaded directly using the `nmsg_message_from_json` function (or
 #### NMSG Binary Messages
 
 The `nmsg+binary` output format is plumbing for a future nmsg input type.  It
-is not intended for use at this time but its contents are serialized nmsg
-containers.  It can be requested using `output_format=nmsg+binary`.
+is not intended for use at this time. Responses are binary streams of
+serialized nmsg containers rather than JSON sequences.  It can be requested
+using `output_format=nmsg+binary`.
 
 ### Error Responses
 
