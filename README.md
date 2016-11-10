@@ -163,8 +163,7 @@ The Farsight AXA RESTful Interface consists of four methods.  Two of the
 methods, "Channel List" and "Anomaly List," are used to interrogate the server
 about which channels and anomaly modules the user is allowed to access.  The
 remaining methods, "SRA Stream" and "RAD Stream," stream line-delimited
-JSON (or binary nmsg container, if requested) data per JSON-encoded parameters
-sent in a POST request.
+JSON data per JSON-encoded parameters sent in a POST request.
 
 Responses are encoded as JSON Text Sequences per
 [RFC 7464](https://tools.ietf.org/html/rfc7464). Each JSON text is preceded
@@ -288,7 +287,7 @@ This method takes a JSON or YAML document conforming to the
 | `sample_rate` | number | No | Sampling rate (float over (0..1]) for the SRA server. |
 | `rate_limit` | integer | No | Maximum watch hits per second. |
 | `report_interval` | integer | No | Seconds between statistics messages. |
-| `output_format` | string | No |  One of `axa+json`, `nmsg+json`, or `nmsg+binary`. |
+| `output_format` | string | No |  One of `axa+json`, `nmsg+json`. |
 
 See the AXA Watch Format for more details on watch syntax.
 
@@ -336,7 +335,7 @@ This method takes a JSON or YAML document conforming to the
 | `sample_rate` | number | No | Sampling rate (float over (0..1]) for the SRA server. |
 | `rate_limit` | integer | No | Maximum watch hits per second. |
 | `report_interval` | integer | No | Seconds between statistics messages. |
-| `output_format` | string | No |  One of `axa+json`, `nmsg+json`, or `nmsg+binary`. |
+| `output_format` | string | No |  One of `axa+json`, `nmsg+json`. |
 
 See the AXA Watch Format for more details on watch syntax.
 
@@ -514,13 +513,6 @@ loaded directly using the `nmsg_message_from_json` function (or
 | `vname` | string | Vendor name. |
 | `time` | string | Time when the message was recorded. |
 | `message` | object | Module-specific fields. |
-
-#### NMSG Binary Messages
-
-The `nmsg+binary` output format is plumbing for a future nmsg input type.  It
-is not intended for use at this time. Responses are binary streams of
-serialized nmsg containers rather than JSON sequences.  It can be requested
-using `output_format=nmsg+binary`.
 
 ### Error Responses
 
