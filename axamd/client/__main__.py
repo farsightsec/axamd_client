@@ -180,6 +180,8 @@ def main():
             raise
         print ('{}: {}'.format(e.__class__.__name__, str(e)), file=sys.stderr)
         return 1
+    except KeyboardInterrupt:
+        return None
     return None
 
 if __name__ == '__main__':
