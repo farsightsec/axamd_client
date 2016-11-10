@@ -27,5 +27,6 @@ Depends: ${misc:Depends}, ${python:Depends}, ${shlibs:Depends},
  python-pkg-resources
 Recommends:
  python-nmsg
-Description: network message encapsulation library (Python bindings)
- This package contains the libaxa Python extension module.
+Description: Farsight AXAMD Client Library and Tool
+ This package contains the axamd.client Python extension module and the
+ axamd_client entry point.
