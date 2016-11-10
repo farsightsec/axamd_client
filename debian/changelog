@@ -1,3 +1,21 @@
+axamd-client (1.2.0) debian-farsightsec; urgency=medium
+
+  [ Jeremy C. Reed ]
+  * [be659856] fix some misspelling/typos in docs
+  * [bda9fb6b] fix typo in yaml definition
+
+  [ Henry Stern ]
+  * [6553f45b] client: remove record separator prefixes from lines
+  * [ca1bb869] README: Add application/json-seq documentation
+  * [04a8251a] main: add default api key, fixes issue #9
+  * [f92c3d23] main: raise an argparse error if no API key is set
+  * [52c2ec46] main: instead of adding apikey to default, use dict.get
+  * [f2c3df11] main: quiet keyboardinterrupt exceptions
+  * [f0abbf05] debian/control: fix package description for python-axamd-client
+  * [fbbb042d] control: remove useless dependency on python-axa
+
+ -- Henry Stern <stern@fsi.io>  Thu, 10 Nov 2016 10:01:40 -0400
+
 axamd-client (1.1.0) debian-farsightsec; urgency=medium
 
   * [d84221fb] axamd.client: Add Timeout exception, reraise requests.Timeout
