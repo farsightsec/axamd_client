@@ -36,7 +36,6 @@ _default_config_files=(
 DEFAULT_AXAMD_SERVER='https://axamd.sie-network.net'
 _default_config = {
     'server': DEFAULT_AXAMD_SERVER,
-    'apikey': '',
 }
 
 _config_schema = yaml.safe_load(pkg_resources.resource_stream(__name__, 'client-config-schema.yaml'))
@@ -110,7 +109,7 @@ def main():
         config['server'] = args.server
     if args.apikey:
         config['apikey'] = args.apikey
-    if not config['apikey']:
+    if not config.get('apikey'):
         parser.error('API key is not set')
     if args.proxy:
         config['proxy'] = args.proxy
