@@ -143,8 +143,8 @@ for line in c.sra(channels=[212], watches=['ch=212']):
 
 import nmsg
 
-# detect the string "mail" anywhere in the DNS label hierarchy
-for line in c.rad(anomalies=[Anomaly('string_match', ['dns=*.'], 'match=mail')],
+# detect the string "mail" anywhere in the DNS label hierarchy using the literal and homoglyph matchers, ignore anything in the *.org TLD
+for line in c.rad(anomalies=[Anomaly('brand_sentry', ['dns=*.'], 'brand=mail matcher=lit,hgl whitelist=*.org')],
         output_format='nmsg+json'):
     msg = nmsg.message.from_json(line)
 ```
@@ -235,7 +235,7 @@ See Error Responses for more details.
 * **Success Response:**
 
   **Code:** 200  
-  **Content:** `{ "string_match": "Watch for strings anywhere in the DNS label hierarchy." }`
+  **Content:** `{ "brand_sentry": "Detect possible brand infringement." }`
 
 ```yaml
 id: http://farsightsecurity.com/axamd-anomalies-output-schema#
