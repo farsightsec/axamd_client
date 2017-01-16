@@ -309,7 +309,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `curl --data '{ "channels": [212], "watches": ["ch=212"] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/sra/stream`
+  `curl --data '{ "channels":[212], "watches":["ch=212"] }' --header 'X-API-Key: <elided>' https://axamd.sie-remote.net/v1/sra/stream`
 
 ### RAD Stream
 
@@ -357,7 +357,7 @@ See Error Responses for more details.
 
 * **Sample Call:**
 
-  `curl --data '{ "anomalies": [{ "module": "string_match", "watches": ["dns=*."], "options": "match=www" }] }' --header 'X-API-Key: <elided>' $AXAMD_SERVER/v1/rad/stream`
+  `curl --data '{ "anomalies": [{ "module": "brand_sentry", "watches": ["dns=*."], "options": "brand=mail matcher=lit" }], "report_interval": 86400 }' --header 'X-API-Key: <elided>' 'https://axamd.sie-remote.net/v1/rad/stream`
 
 ### Stream Output Formats
 
