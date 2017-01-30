@@ -20,6 +20,7 @@ import logging
 import os
 import sys
 
+from . import __version__
 from .client import Anomaly, Client
 from .exceptions import ProblemDetails
 import jsonschema
@@ -102,6 +103,7 @@ def main():
             metavar=('MODULE', 'OPTIONS'),
             help='RAD mode: Anomaly module and options')
     parser.add_argument('--debug', action='store_true', help='Debug mode')
+    parser.add_argument('--version', '-V', action='version', version="%(prog)s ({})".format(__version__))
     args = parser.parse_args()
 
     config = _load_config(args.config)
