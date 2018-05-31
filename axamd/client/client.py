@@ -37,7 +37,10 @@ import platform
 from . import __version__
 from .exceptions import ProblemDetails, ValidationError, Timeout
 from .six_mini import reraise
+
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 try:
     import pkg_resources
@@ -63,6 +66,27 @@ except ImportError:
     # TODO debug log this
     def _sra_stream_param_validate(instance): pass
     def _rad_stream_param_validate(instance): pass
+
+
+def requests_retry_session(
+    retries=3,
+    backoff_factor=0.3,
+    status_forcelist=(404, 500, 502, 504),
+    session=None,
+):
+    session = session or requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
+
 
 class Anomaly:
     '''
@@ -112,7 +136,7 @@ class Client:
             platform.python_implementation(), platform.python_version(),
             platform.platform())
     __doc__ = __doc__
-    def __init__(self, server, apikey, proxy=None):
+    def __init__(self, server, apikey, retries=3, retry_backoff=0.3, proxy=None):
         '''
         Args:
             server (string): Server URI
@@ -120,6 +144,8 @@ class Client:
         '''
         self._server = server
         self._apikey = apikey
+        self._retries = retries
+        self._backoff = retry_backoff
         self._proxies = {}
         if proxy:
             self._proxies['http'] = proxy
@@ -129,7 +155,8 @@ class Client:
         if validate:
             validate(stream_params)
         with _rq_ctx():
-            r = requests.post(uri, data=json.dumps(stream_params),
+            r = requests_retry_session(retries=self._retries, backoff_factor=self._backoff)\
+                .post(uri, data=json.dumps(stream_params),
                     headers={
                         'X-API-Key': self._apikey,
                         'User-Agent': Client.user_agent,
@@ -141,7 +168,7 @@ class Client:
 
     def _get(self, uri, timeout=None):
         with _rq_ctx():
-            r = requests.get(uri, 
+            r = requests_retry_session(retries=self._retries, backoff_factor=self._backoff).get(uri,
                     headers={
                         'X-API-Key': self._apikey,
                         'User-Agent': Client.user_agent,
