@@ -83,9 +83,9 @@ def main():
     parser.add_argument('--proxy', '-p', help='HTTP proxy')
     parser.add_argument('--timeout', '-t', type=float,
             help='Timeout for connections')
-    parser.add_argument('--retries', '-R', type=int, default=3,
+    parser.add_argument('--retries', '-R', type=int,
                         help='Number of retries before giving up')
-    parser.add_argument('--retry-backoff', '-B', type=float, default=0.3,
+    parser.add_argument('--retry-backoff', '-B', type=float,
                         help='Progressively backoff for each retry')
     parser.add_argument('--rate-limit', '-l', type=int, metavar='PPS',
             help='AXA rate limit')
@@ -153,8 +153,8 @@ def main():
     client = Client(server=config['server'],
                     apikey=config['apikey'],
                     proxy=config.get('proxy'),
-                    retries=config.get('retries'),
-                    retry_backoff=config.get('retry_backoff'))
+                    retries=config.get('retries', 3),
+                    retry_backoff=config.get('retry_backoff', 0.3))
 
     timeout = config.get('timeout')
 
