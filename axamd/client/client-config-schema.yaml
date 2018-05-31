@@ -20,9 +20,9 @@ properties:
                 exclusiveMinimum: true
         retries:
                 description: Number of times to retry failed connections
-                type: number
+                type: integer
                 minimum: 0
-        backoff:
+        retry-backoff:
                 description: Wait a little longer before each retry attempt (factional seconds)
                 type: number
                 minimum: 0.3
