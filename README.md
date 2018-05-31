@@ -63,6 +63,8 @@ Allowable keys are:
 | `apikey` | string | Key for authentication |
 | `proxy` | string | HTTP proxy |
 | `timeout` | number | Socket timeout in seconds |
+| `retries` | integer | Number of retries before giving up |
+| `retry-backoff` | number | Progressively wait longer on each retry before the next attempt |
 | `sample-rate` | number | Channel sampling rate (percent) |
 | `rate-limit` | integer | Maximum packets per second |
 | `report-interval` | integer | Seconds between emission of server accounting messages (packet statistics) |
@@ -74,6 +76,7 @@ The client can be invoked from the command line as follows:
 ```
 usage: axamd_client [-h] [--config CONFIG] [--server SERVER] [--apikey APIKEY]
                  [--proxy PROXY] [--timeout TIMEOUT] [--rate-limit PPS]
+                 [--retries NUMBER] [--retry_backoff FLOATSECS] 
                  [--report-interval SECONDS] [--sample-rate PERCENTAGE]
                  [--list-channels] [--list-anomalies]
                  [--channels [CHANNEL [CHANNEL ...]]]
@@ -94,6 +97,10 @@ optional arguments:
                         HTTP proxy
   --timeout TIMEOUT, -t TIMEOUT
                         Timeout for connections
+  --retries NRETRIES, -R NRETRIES
+                        Number of times to retry a connection problem (def: 3)
+  --retry_backoff FRACSEC, -B FRACSEC
+                        Progressively wait longer on each retry attempt (def: 0.3)
   --rate-limit PPS, -l PPS
                         AXA rate limit
   --report-interval SECONDS, -i SECONDS
