@@ -19,6 +19,7 @@ import errno
 import logging
 import os
 import sys
+import textwrap
 
 from . import __version__
 from .client import Anomaly, Client
@@ -153,11 +154,28 @@ def main():
 
     try:
         if args.list_channels:
-            for channel,description in client.list_channels(timeout=timeout).items():
-                print ('{}: {}'.format(channel, description))
+            for channel, chan_dict in client.list_channels(timeout=timeout).items():
+                try:
+                    desc = chan_dict['description']
+                except KeyError:
+                    desc = "No description available."
+
+                if sys.stdout.isatty():
+                    print('{}:\n\t{}'.format(channel, "\n\t".join(textwrap.wrap(desc))))
+                else:
+                    print('{}: {}'.format(channel, desc))
+
         elif args.list_anomalies:
-            for module,description in client.list_anomalies(timeout=timeout).items():
-                print ('{}: {}'.format(module, description))
+            for module, mod_dict in client.list_anomalies(timeout=timeout).items():
+                try:
+                    desc = mod_dict['description']
+                except KeyError:
+                    desc = "No description available."
+
+                if sys.stdout.isatty():
+                    print('{}:\n\t{}'.format(module, "\n\t".join(textwrap.wrap(desc))))
+                else:
+                    print('{}: {}'.format(module, desc))
         elif args.channels:
             for result in client.sra(args.channels, args.watches,
                     timeout=timeout, **client_args):
