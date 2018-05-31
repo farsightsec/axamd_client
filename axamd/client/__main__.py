@@ -83,6 +83,10 @@ def main():
     parser.add_argument('--proxy', '-p', help='HTTP proxy')
     parser.add_argument('--timeout', '-t', type=float,
             help='Timeout for connections')
+    parser.add_argument('--retries', '-R', type=int, default=3,
+                        help='Number of retries before giving up')
+    parser.add_argument('--retry-backoff', '-B', type=float, default=0.3,
+                        help='Progressively backoff for each retry')
     parser.add_argument('--rate-limit', '-l', type=int, metavar='PPS',
             help='AXA rate limit')
     parser.add_argument('--report-interval', '-i', type=int, metavar='SECONDS',
@@ -119,6 +123,14 @@ def main():
         if args.timeout < 0:
             parser.error('Timeout must be a positive real number')
         config['timeout'] = args.timeout
+    if args.retries:
+        if args.retries < 0:
+            parser.error('Retries must be a positive real number')
+        config['retries'] = args.retries
+    if args.retry_backoff:
+        if args.retry_backoff < 0:
+            parser.error('Retry-backoff must be a positive real number')
+        config['retry_backoff'] = args.retry_backoff
     if args.rate_limit:
         if args.rate_limit < 0:
             parser.error('Rate limit must be a positive integer')
@@ -138,8 +150,11 @@ def main():
     if not (args.list_channels or args.list_anomalies or args.watches):
         parser.error('A watch list is required unless listing available channels or anomaly modules')
 
-    client = Client(server=config['server'], apikey=config['apikey'],
-            proxy=config.get('proxy'))
+    client = Client(server=config['server'],
+                    apikey=config['apikey'],
+                    proxy=config.get('proxy'),
+                    retries=config.get('retries'),
+                    retry_backoff=config.get('retry_backoff'))
 
     timeout = config.get('timeout')
 
