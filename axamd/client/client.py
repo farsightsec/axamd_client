@@ -76,6 +76,7 @@ def requests_retry_session(
 ):
     session = session or requests.Session()
     retry = Retry(
+        method_whitelist=frozenset(['GET', 'POST']),
         total=retries,
         read=retries,
         connect=retries,
