@@ -155,10 +155,13 @@ def main():
     try:
         if args.list_channels:
             for channel, chan_dict in client.list_channels(timeout=timeout).items():
-                try:
-                    desc = chan_dict['description']
-                except KeyError:
-                    desc = "No description available."
+                if not isinstance(chan_dict, dict):
+                    desc = chan_dict # backward compat where axamd would return desc directly
+                else:
+                    try:
+                        desc = chan_dict['description']
+                    except KeyError:
+                        desc = "No description available."
 
                 if sys.stdout.isatty():
                     print('{}:\n\t{}'.format(channel, "\n\t".join(textwrap.wrap(desc))))
@@ -167,10 +170,13 @@ def main():
 
         elif args.list_anomalies:
             for module, mod_dict in client.list_anomalies(timeout=timeout).items():
-                try:
-                    desc = mod_dict['description']
-                except KeyError:
-                    desc = "No description available."
+                if not isinstance(mod_dict, dict):
+                    desc = mod_dict # backward compat where axamd would return desc directly
+                else:
+                    try:
+                        desc = mod_dict['description']
+                    except KeyError:
+                        desc = "No description available."
 
                 if sys.stdout.isatty():
                     print('{}:\n\t{}'.format(module, "\n\t".join(textwrap.wrap(desc))))
