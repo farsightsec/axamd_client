@@ -17,13 +17,33 @@
 import os
 
 from setuptools import setup
+from setuptools.command.build_py import build_py as _build_py
+from setuptools.command.install import install as _install
+from shutil import copyfile
 
 base_dir = os.path.dirname(__file__)
 about = {}
 with open(os.path.join(base_dir, 'axamd', 'client', '__about__.py')) as f:
     exec(f.read(), about)
 
+class CustomBuild(_build_py):
+    def run(self):
+        if os.system('pandoc README.md -s -tman > axamd_client.1') != 0:
+            print("warning: install pandoc to produce a man page")
+        _build_py.run(self)
+
+class CustomInstall(_install):
+    def run(self):
+        srcfile, dstdir = "axamd_client.1", "/usr/local/man/man1/"
+        if os.path.isfile(srcfile):
+            try:
+                copyfile(srcfile, "{}{}".format(dstdir, srcfile))
+            except:
+                print("warning: can't write to {}{}".format(dstdir, srcfile))
+        _install.run(self)
+
 setup(
+    cmdclass = { 'build_py': CustomBuild, 'install': CustomInstall },
     name = about['__title__'],
     description = about['__description__'],
     version = about['__version__'],
