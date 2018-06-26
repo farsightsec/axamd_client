@@ -50,6 +50,8 @@ class TestClientConfigSchema(TestSchema, unittest.TestCase):
             'sample-rate': 1,
             'rate-limit': 1,
             'report-interval': 1,
+            'retries': 1,
+            'retry-backoff': 1
             })
 
     def test_extra_keys(self):

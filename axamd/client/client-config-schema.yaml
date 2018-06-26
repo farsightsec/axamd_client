@@ -18,6 +18,14 @@ properties:
                 type: number
                 minimum: 0
                 exclusiveMinimum: true
+        retries:
+                description: Number of times to retry failed connections
+                type: integer
+                minimum: 0
+        retry-backoff:
+                description: Wait a little longer before each retry attempt (factional seconds)
+                type: number
+                minimum: 0.3
         sample-rate:
                 description: Channel sampling rate (percent)
                 type: number
