@@ -1,3 +1,15 @@
+axamd-client (1.2.1) debian-farsightsec; urgency=medium
+
+  * Retry/backoff in event of 404, connection failure, and some 50x status
+    codes: adds --retries and --retry_backoff command-line options and
+    ~/.axamd-client.conf config options.
+  * Prettify --list-* output, wrapping if to terminal or one-lining if not.
+  * Add Python3 compatibility.
+  * Add --version.
+  * Clarify README.
+
+ -- Farsight Security, Inc. <software@farsightsecurity.com>  Wed, 27 Jun 2018 15:46:29 -0400
+
 axamd-client (1.2.0) debian-farsightsec; urgency=medium
 
   [ Jeremy C. Reed ]
