@@ -1,4 +1,4 @@
-axamd-client (1.2.1) debian-farsightsec; urgency=medium
+axamd-client (1.3.0) debian-farsightsec; urgency=medium
 
   * Retry/backoff in event of 404, connection failure, and some 50x status
     codes: adds --retries and --retry_backoff command-line options and
