@@ -1,4 +1,4 @@
-# Copyright (c) 2016 by Farsight Security, Inc.
+# Copyright (c) 2016, 2018 by Farsight Security, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -165,7 +165,8 @@ class Client:
                     proxies = self._proxies,
                     timeout=timeout, stream=True)
             r.raise_for_status()
-            return (line.lstrip(b'\x1e').decode('utf-8') for line in r.iter_lines())
+            for line in r.iter_lines():
+                yield line.lstrip(b'\x1e').decode('utf-8')
 
     def _get(self, uri, timeout=None):
         with _rq_ctx():

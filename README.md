@@ -76,7 +76,7 @@ The client can be invoked from the command line as follows:
 ```
 usage: axamd_client [-h] [--config CONFIG] [--server SERVER] [--apikey APIKEY]
                  [--proxy PROXY] [--timeout TIMEOUT] [--rate-limit PPS]
-                 [--retries NUMBER] [--retry_backoff FLOATSECS] 
+                 [--retries NUMBER] [--retry_backoff FLOATSECS]
                  [--report-interval SECONDS] [--sample-rate PERCENTAGE]
                  [--list-channels] [--list-anomalies]
                  [--channels [CHANNEL [CHANNEL ...]]]
