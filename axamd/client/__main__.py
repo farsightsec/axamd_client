@@ -28,6 +28,7 @@ import jsonschema
 import option_merge
 import pkg_resources
 import yaml
+import signal
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,7 @@ _default_config = {
 }
 
 _config_schema = yaml.safe_load(pkg_resources.resource_stream(__name__, 'client-config-schema.yaml'))
+
 
 def _load_config(filename=None, allow_exceptions=True):
     configs = [ _default_config ]
@@ -64,6 +66,7 @@ def _load_config(filename=None, allow_exceptions=True):
     jsonschema.validate(config, _config_schema)
     return config
 
+
 def _percentage(arg):
     v = arg
     if v.endswith('%'):
@@ -75,6 +78,15 @@ def _percentage(arg):
     except ValueError:
         raise argparse.ArgumentTypeError('invalid percentage value: {!r}'.format(arg))
 
+
+def duration_handler(signum, frame):
+    """
+    this is called if the --duration parameter is specified
+    """
+    if signum == signal.SIGALRM:
+        sys.exit(0)
+
+
 def main():
     parser = argparse.ArgumentParser(
             description='Client for the AXA RESTful Interface')
@@ -82,6 +94,8 @@ def main():
     parser.add_argument('--number', '-n',
                         type=int,
                         help='Return no more than N json messages and stop')
+    parser.add_argument('--duration', '-d',
+                        help='Run for hh:mm:ss duration and then stop.')
     parser.add_argument('--server', '-s', help='AXAMD server')
     parser.add_argument('--apikey', '-k', help='API key')
     parser.add_argument('--proxy', '-p', help='HTTP proxy')
@@ -123,6 +137,13 @@ def main():
         parser.error('API key is not set')
     if args.proxy:
         config['proxy'] = args.proxy
+    if args.duration:
+        try:
+            hh,mm,ss = map(int, args.duration.split(":"))
+        except Exception as e:
+            parser.error('Duration must be specified as hh:mm:ss {}'.format(e))
+        stoptime = hh*3600 + mm*60 + ss
+        signal.signal(signal.SIGALRM, duration_handler)
     if args.number:
         if args.number < 0:
             parser.error('Number parameter must be greater than zero')
@@ -206,6 +227,7 @@ def main():
                     print('{}: {}'.format(module, desc))
         elif args.channels:
             count = 0
+            if args.duration: signal.alarm(stoptime)
             for result in client.sra(args.channels, args.watches,
                     timeout=timeout, **client_args):
                 print (result)
@@ -217,6 +239,7 @@ def main():
             count = 0
             anomaly = Anomaly(args.anomaly[0], watches=args.watches,
                     options=' '.join(args.anomaly[1:]))
+            if args.duration: signal.alarm(stoptime)
             for result in client.rad([anomaly], timeout=timeout, **client_args):
                 print (result)
                 sys.stdout.flush()
@@ -238,6 +261,7 @@ def main():
     except KeyboardInterrupt:
         return None
     return None
+
 
 if __name__ == '__main__':
     exit(main())
