@@ -74,14 +74,15 @@ See [client-config-schema.yaml](axamd/client/client-config-schema.yaml) for more
 The client can be invoked from the command line as follows:
 
 ```
-usage: axamd_client [-h] [--config CONFIG] [--server SERVER] [--apikey APIKEY]
-                 [--proxy PROXY] [--timeout TIMEOUT] [--rate-limit PPS]
-                 [--retries NUMBER] [--retry_backoff FLOATSECS]
-                 [--report-interval SECONDS] [--sample-rate PERCENTAGE]
-                 [--list-channels] [--list-anomalies]
-                 [--channels [CHANNEL [CHANNEL ...]]]
-                 [--watches WATCH [WATCH ...]]
-                 [--anomaly [MODULE [OPTIONS ...]]] [--debug]
+usage: axamd_client [-h] [--config CONFIG] [--number NUMBER]
+                    [--duration DURATION] [--server SERVER] [--apikey APIKEY]
+                    [--proxy PROXY] [--timeout TIMEOUT] [--retries RETRIES]
+                    [--retry-backoff RETRY_BACKOFF] [--rate-limit PPS]
+                    [--report-interval SECONDS] [--sample-rate PERCENTAGE]
+                    [--list-channels] [--list-anomalies]
+                    [--channels [CHANNEL [CHANNEL ...]]]
+                    [--watches WATCH [WATCH ...]]
+                    [--anomaly [MODULE [OPTIONS ...]]] [--debug] [--version]
 
 Client for the AXA RESTful Interface
 
@@ -89,6 +90,10 @@ optional arguments:
   -h, --help            show this help message and exit
   --config CONFIG, -c CONFIG
                         Path to config file
+  --number NUMBER, -n NUMBER
+                        Return no more than N json messages and stop
+  --duration DURATION, -d DURATION
+                        Run for hh:mm:ss duration and then stop.
   --server SERVER, -s SERVER
                         AXAMD server
   --apikey APIKEY, -k APIKEY
@@ -97,10 +102,10 @@ optional arguments:
                         HTTP proxy
   --timeout TIMEOUT, -t TIMEOUT
                         Timeout for connections
-  --retries NRETRIES, -R NRETRIES
-                        Number of times to retry a connection problem (def: 3)
-  --retry_backoff FRACSEC, -B FRACSEC
-                        Progressively wait longer on each retry attempt (def: 0.3)
+  --retries RETRIES, -R RETRIES
+                        Number of retries before giving up
+  --retry-backoff RETRY_BACKOFF, -B RETRY_BACKOFF
+                        Progressively backoff for each retry
   --rate-limit PPS, -l PPS
                         AXA rate limit
   --report-interval SECONDS, -i SECONDS
@@ -116,14 +121,18 @@ optional arguments:
   --anomaly [MODULE [OPTIONS ...]], -A [MODULE [OPTIONS ...]]
                         RAD mode: Anomaly module and options
   --debug               Debug mode
-
+  --version, -V         show program's version number and exit
 ```
 
 Example usage:
 
 ```bash
-axamd_client --channels 204 --watches dns=farsightsecurity.com.
+ axamd_client --channels 204 --watches dns=farsightsecurity.com.
+ axamd_client --channels 204 --watches dns=farsightsecurity.com. -c 5
+ axamd_client --channels 204 --watches dns=farsightsecurity.com. -d 00:00:30
 ```
+
+Note that `-c` and `-d` can be used together.
 
 The client may also be used programmatically.  It is compatible with both
 Python 2 and Python 3.  The client raises `axamd.ProblemDetails` exceptions
