@@ -19,7 +19,7 @@ __all__ = [
         ]
 
 __title__ = 'axamd.client'
-__version__ = '1.3.1'
+__version__ = '1.4'
 __description__ = 'Farsight Advanced Exchange Access (AXA) RESTful API Client'
 __author__ = 'Farsight Security, Inc.'
 __author_email__ = 'software@farsightsecurity.com'

@@ -1,3 +1,10 @@
+axamd-client (1.4) debian-farsightsec; urgency=medium
+
+  * Add --count|-c parameter
+  * Add --duration|-d parameter
+
+ -- Farsight Security, Inc. <software@farsightsecurity.com>  Wed, 29 Aug 2018 13:32:00 -0400
+
 axamd-client (1.3.1) debian-farsightsec; urgency=medium
 
   * Remove duplicate decode() calls in main
