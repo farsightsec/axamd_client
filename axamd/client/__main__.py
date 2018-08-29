@@ -79,6 +79,9 @@ def main():
     parser = argparse.ArgumentParser(
             description='Client for the AXA RESTful Interface')
     parser.add_argument('--config', '-c', help='Path to config file')
+    parser.add_argument('--number', '-n',
+                        type=int,
+                        help='Return no more than N json messages and stop')
     parser.add_argument('--server', '-s', help='AXAMD server')
     parser.add_argument('--apikey', '-k', help='API key')
     parser.add_argument('--proxy', '-p', help='HTTP proxy')
@@ -120,6 +123,10 @@ def main():
         parser.error('API key is not set')
     if args.proxy:
         config['proxy'] = args.proxy
+    if args.number:
+        if args.number < 0:
+            parser.error('Number parameter must be greater than zero')
+        config['number'] = args.number
     if args.timeout:
         if args.timeout < 0:
             parser.error('Timeout must be a positive real number')
@@ -198,16 +205,24 @@ def main():
                 else:
                     print('{}: {}'.format(module, desc))
         elif args.channels:
+            count = 0
             for result in client.sra(args.channels, args.watches,
                     timeout=timeout, **client_args):
                 print (result)
                 sys.stdout.flush()
+                count += 1
+                if args.number and count >= args.number:
+                    break
         elif args.anomaly:
+            count = 0
             anomaly = Anomaly(args.anomaly[0], watches=args.watches,
                     options=' '.join(args.anomaly[1:]))
             for result in client.rad([anomaly], timeout=timeout, **client_args):
                 print (result)
                 sys.stdout.flush()
+                count += 1
+                if args.number and count >= args.number:
+                    break
         else:
             parser.error('Need channels and watches for SRA mode or anomaly for RAD mode')
     except ProblemDetails as e:
