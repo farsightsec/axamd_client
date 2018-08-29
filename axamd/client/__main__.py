@@ -139,7 +139,7 @@ def main():
         config['proxy'] = args.proxy
     if args.duration:
         try:
-            hh,mm,ss = map(int, args.duration.split(":"))
+            hh,mm,ss = map(abs, map(int, args.duration.split(":")))
         except Exception as e:
             parser.error('Duration must be specified as hh:mm:ss {}'.format(e))
         stoptime = hh*3600 + mm*60 + ss
