@@ -91,30 +91,29 @@ def duration_handler(signum, frame):
 def timespec_to_seconds(ts):
     """
     turn either hh:mm:ss or %dw%dd%dh%dm%ds
-    into seconds
+    into seconds. for the latter, things like "1w" or "1w1s" are
+    ok, but "1s1w" (out-of-order) is not.
     :param ts: string timespec
     :return: integer seconds
     """
-    ww, dd, hh, mm, ss = 0,0,0,0,0
+    c = {'w': 0, 'd': 0, 'h': 0, 'm': 0, 's': 0}
 
     try:
-        hh, mm, ss = map(abs, map(int, ts.split(":")))
+        c['h'], c['m'], c['s'] = map(abs, map(int, ts.split(":")))
     except:
-        m = re.search('(?P<weeks>[0-9]+)w(?P<days>[0-9]+)d(?P<hours>[0-9]+)h(?P<minutes>[0-9]+)m(?P<seconds>[0-9]+)s',
-                      ts)
-        ww, dd, hh, mm, ss = map(abs, map(int, [m.group('weeks'),
-                                                m.group('days'),
-                                                m.group('hours'),
-                                                m.group('minutes'),
-                                                m.group('seconds')]))
-
-        if not m:
+        m = re.search('(?P<weeks>[0-9]*)(w?)(?P<days>[0-9]*)(d?)(?P<hours>[0-9]*)(m?)(?P<minutes>[0-9]*)(m?)(?P<seconds>[0-9]*)(s?)',ts)
+        if m:
+            a = []
+            for i in m.groups():
+                if i != '': a.append(i)
+            c.update({a[i+1]: abs(int(a[i])) for i in range(0, len(a), 2)})
+        else:
             return None
 
-    return ww * 604800 + \
-           dd * 86400  + \
-           hh * 3600   + \
-           mm * 60     + ss
+    return c['w'] * 604800 + \
+           c['d'] * 86400  + \
+           c['h'] * 3600   + \
+           c['m'] * 60     + c['s']
 
 
 def main():
