@@ -20,6 +20,7 @@ import logging
 import os
 import sys
 import textwrap
+import re
 
 from . import __version__
 from .client import Anomaly, Client
@@ -87,6 +88,35 @@ def duration_handler(signum, frame):
         sys.exit(0)
 
 
+def timespec_to_seconds(ts):
+    """
+    turn either hh:mm:ss or %dw%dd%dh%dm%ds
+    into seconds
+    :param ts: string timespec
+    :return: integer seconds
+    """
+    ww, dd, hh, mm, ss = 0,0,0,0,0
+
+    try:
+        hh, mm, ss = map(abs, map(int, ts.split(":")))
+    except:
+        m = re.search('(?P<weeks>[0-9]+)w(?P<days>[0-9]+)d(?P<hours>[0-9]+)h(?P<minutes>[0-9]+)m(?P<seconds>[0-9]+)s',
+                      ts)
+        ww, dd, hh, mm, ss = map(abs, map(int, [m.group('weeks'),
+                                                m.group('days'),
+                                                m.group('hours'),
+                                                m.group('minutes'),
+                                                m.group('seconds')]))
+
+        if not m:
+            return None
+
+    return ww * 604800 + \
+           dd * 86400  + \
+           hh * 3600   + \
+           mm * 60     + ss
+
+
 def main():
     parser = argparse.ArgumentParser(
             description='Client for the AXA RESTful Interface')
@@ -138,11 +168,9 @@ def main():
     if args.proxy:
         config['proxy'] = args.proxy
     if args.duration:
-        try:
-            hh,mm,ss = map(abs, map(int, args.duration.split(":")))
-        except Exception as e:
+        stoptime = timespec_to_seconds(args.duration)
+        if stoptime is None:
             parser.error('Duration must be specified as hh:mm:ss {}'.format(e))
-        stoptime = hh*3600 + mm*60 + ss
         signal.signal(signal.SIGALRM, duration_handler)
     if args.number:
         if args.number < 0:
