@@ -125,7 +125,7 @@ def main():
                         type=int,
                         help='Return no more than N json messages and stop')
     parser.add_argument('--duration', '-d',
-                        help='Run for hh:mm:ss duration and then stop.')
+                        help='Run for hh:mm:ss (or #w#d#h#m#s) duration and then stop.')
     parser.add_argument('--server', '-s', help='AXAMD server')
     parser.add_argument('--apikey', '-k', help='API key')
     parser.add_argument('--proxy', '-p', help='HTTP proxy')
@@ -170,7 +170,7 @@ def main():
     if args.duration:
         stoptime = timespec_to_seconds(args.duration)
         if stoptime is None:
-            parser.error('Duration must be specified as hh:mm:ss {}'.format(e))
+            parser.error('Duration must be specified as hh:mm:ss or #w#d#h#m#s')
         signal.signal(signal.SIGALRM, duration_handler)
     if args.number:
         if args.number < 0:
