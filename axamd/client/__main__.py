@@ -106,6 +106,7 @@ def timespec_to_seconds(ts):
             a = []
             for i in m.groups():
                 if i != '': a.append(i)
+            if len(a) % 2: return None
             c.update({a[i+1]: abs(int(a[i])) for i in range(0, len(a), 2)})
         else:
             return None
