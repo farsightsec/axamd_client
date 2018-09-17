@@ -102,7 +102,7 @@ def timespec_to_seconds(ts):
         c['h'], c['m'], c['s'] = map(abs, map(int, ts.split(":")))
     except:
         m = re.search('(?P<weeks>[0-9]*)(w?)(?P<days>[0-9]*)(d?)(?P<hours>[0-9]*)(m?)(?P<minutes>[0-9]*)(m?)(?P<seconds>[0-9]*)(s?)',ts)
-        if m:
+        if m and len(m.group()) > 0:
             a = []
             for i in m.groups():
                 if i != '': a.append(i)
