@@ -20,6 +20,7 @@ import logging
 import os
 import sys
 import textwrap
+import re
 
 from . import __version__
 from .client import Anomaly, Client
@@ -87,6 +88,35 @@ def duration_handler(signum, frame):
         sys.exit(0)
 
 
+def timespec_to_seconds(ts):
+    """
+    turn either hh:mm:ss or %dw%dd%dh%dm%ds
+    into seconds. for the latter, things like "1w" or "1w1s" are
+    ok, but "1s1w" (out-of-order) is not.
+    :param ts: string timespec
+    :return: integer seconds
+    """
+    c = {'w': 0, 'd': 0, 'h': 0, 'm': 0, 's': 0}
+
+    try:
+        c['h'], c['m'], c['s'] = map(abs, map(int, ts.split(":")))
+    except:
+        m = re.search('(?P<weeks>[0-9]*)(w?)(?P<days>[0-9]*)(d?)(?P<hours>[0-9]*)(m?)(?P<minutes>[0-9]*)(m?)(?P<seconds>[0-9]*)(s?)',ts)
+        if m and len(m.group()) > 0:
+            a = []
+            for i in m.groups():
+                if i != '': a.append(i)
+            if len(a) % 2: return None
+            c.update({a[i+1]: abs(int(a[i])) for i in range(0, len(a), 2)})
+        else:
+            return None
+
+    return c['w'] * 604800 + \
+           c['d'] * 86400  + \
+           c['h'] * 3600   + \
+           c['m'] * 60     + c['s']
+
+
 def main():
     parser = argparse.ArgumentParser(
             description='Client for the AXA RESTful Interface')
@@ -95,7 +125,7 @@ def main():
                         type=int,
                         help='Return no more than N json messages and stop')
     parser.add_argument('--duration', '-d',
-                        help='Run for hh:mm:ss duration and then stop.')
+                        help='Run for hh:mm:ss (or #w#d#h#m#s) duration and then stop.')
     parser.add_argument('--server', '-s', help='AXAMD server')
     parser.add_argument('--apikey', '-k', help='API key')
     parser.add_argument('--proxy', '-p', help='HTTP proxy')
@@ -138,11 +168,9 @@ def main():
     if args.proxy:
         config['proxy'] = args.proxy
     if args.duration:
-        try:
-            hh,mm,ss = map(abs, map(int, args.duration.split(":")))
-        except Exception as e:
-            parser.error('Duration must be specified as hh:mm:ss {}'.format(e))
-        stoptime = hh*3600 + mm*60 + ss
+        stoptime = timespec_to_seconds(args.duration)
+        if stoptime is None:
+            parser.error('Duration must be specified as hh:mm:ss or #w#d#h#m#s')
         signal.signal(signal.SIGALRM, duration_handler)
     if args.number:
         if args.number < 0:

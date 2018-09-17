@@ -93,7 +93,7 @@ optional arguments:
   --number NUMBER, -n NUMBER
                         Return no more than N json messages and stop
   --duration DURATION, -d DURATION
-                        Run for hh:mm:ss duration and then stop.
+                        Run for hh:mm:ss (or #w#d#h#m#s) duration and then stop.
   --server SERVER, -s SERVER
                         AXAMD server
   --apikey APIKEY, -k APIKEY
