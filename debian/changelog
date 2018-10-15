@@ -1,9 +1,9 @@
-axamd-client (1.4) debian-farsightsec; urgency=medium
+axamd-client (1.4.0) debian-farsightsec; urgency=medium
 
   * Add --count|-c parameter
   * Add --duration|-d parameter
 
- -- Farsight Security, Inc. <software@farsightsecurity.com>  Wed, 29 Aug 2018 13:32:00 -0400
+ -- Farsight Security, Inc. <software@farsightsecurity.com>  Mon, 15 Oct 2018 15:21:42 -0400
 
 axamd-client (1.3.1) debian-farsightsec; urgency=medium
 
