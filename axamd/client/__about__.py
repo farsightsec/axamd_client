@@ -1,4 +1,4 @@
-# Copyright (c) 2016 by Farsight Security, Inc.
+# Copyright (c) 2016, 2018 by Farsight Security, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ __all__ = [
         ]
 
 __title__ = 'axamd.client'
-__version__ = '1.3.0'
+__version__ = '1.4.0'
 __description__ = 'Farsight Advanced Exchange Access (AXA) RESTful API Client'
 __author__ = 'Farsight Security, Inc.'
 __author_email__ = 'software@farsightsecurity.com'
 __uri__ = 'https://github.com/farsightsec/axamd_client'
 __license__ = 'Apache License, Version 2.0'
-__copyright__ = 'Copyright 2016 {}'.format(__author__)
+__copyright__ = 'Copyright 2016, 2018 {}'.format(__author__)
 __classifiers__ = [
     'License :: OSI Approved :: Apache Software License',
 ]

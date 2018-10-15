@@ -20,6 +20,7 @@ import logging
 import os
 import sys
 import textwrap
+import re
 
 from . import __version__
 from .client import Anomaly, Client
@@ -28,6 +29,7 @@ import jsonschema
 import option_merge
 import pkg_resources
 import yaml
+import signal
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +43,7 @@ _default_config = {
 }
 
 _config_schema = yaml.safe_load(pkg_resources.resource_stream(__name__, 'client-config-schema.yaml'))
+
 
 def _load_config(filename=None, allow_exceptions=True):
     configs = [ _default_config ]
@@ -64,6 +67,7 @@ def _load_config(filename=None, allow_exceptions=True):
     jsonschema.validate(config, _config_schema)
     return config
 
+
 def _percentage(arg):
     v = arg
     if v.endswith('%'):
@@ -75,10 +79,53 @@ def _percentage(arg):
     except ValueError:
         raise argparse.ArgumentTypeError('invalid percentage value: {!r}'.format(arg))
 
+
+def duration_handler(signum, frame):
+    """
+    this is called if the --duration parameter is specified
+    """
+    if signum == signal.SIGALRM:
+        sys.exit(0)
+
+
+def timespec_to_seconds(ts):
+    """
+    turn either hh:mm:ss or %dw%dd%dh%dm%ds
+    into seconds. for the latter, things like "1w" or "1w1s" are
+    ok, but "1s1w" (out-of-order) is not.
+    :param ts: string timespec
+    :return: integer seconds
+    """
+    c = {'w': 0, 'd': 0, 'h': 0, 'm': 0, 's': 0}
+
+    try:
+        c['h'], c['m'], c['s'] = map(abs, map(int, ts.split(":")))
+    except:
+        m = re.search('(?P<weeks>[0-9]*)(w?)(?P<days>[0-9]*)(d?)(?P<hours>[0-9]*)(h?)(?P<minutes>[0-9]*)(m?)(?P<seconds>[0-9]*)(s?)',ts)
+        if m and len(m.group()) > 0:
+            a = []
+            for i in m.groups():
+                if i != '': a.append(i)
+            if len(a) % 2: return None
+            c.update({a[i+1]: abs(int(a[i])) for i in range(0, len(a), 2)})
+        else:
+            return None
+
+    return c['w'] * 604800 + \
+           c['d'] * 86400  + \
+           c['h'] * 3600   + \
+           c['m'] * 60     + c['s']
+
+
 def main():
     parser = argparse.ArgumentParser(
             description='Client for the AXA RESTful Interface')
     parser.add_argument('--config', '-c', help='Path to config file')
+    parser.add_argument('--number', '-n',
+                        type=int,
+                        help='Return no more than N json messages and stop')
+    parser.add_argument('--duration', '-d',
+                        help='Run for hh:mm:ss (or #w#d#h#m#s) duration and then stop.')
     parser.add_argument('--server', '-s', help='AXAMD server')
     parser.add_argument('--apikey', '-k', help='API key')
     parser.add_argument('--proxy', '-p', help='HTTP proxy')
@@ -120,6 +167,15 @@ def main():
         parser.error('API key is not set')
     if args.proxy:
         config['proxy'] = args.proxy
+    if args.duration:
+        stoptime = timespec_to_seconds(args.duration)
+        if stoptime is None:
+            parser.error('Duration must be specified as hh:mm:ss or #w#d#h#m#s')
+        signal.signal(signal.SIGALRM, duration_handler)
+    if args.number:
+        if args.number < 0:
+            parser.error('Number parameter must be greater than zero')
+        config['number'] = args.number
     if args.timeout:
         if args.timeout < 0:
             parser.error('Timeout must be a positive real number')
@@ -198,16 +254,26 @@ def main():
                 else:
                     print('{}: {}'.format(module, desc))
         elif args.channels:
+            count = 0
+            if args.duration: signal.alarm(stoptime)
             for result in client.sra(args.channels, args.watches,
                     timeout=timeout, **client_args):
-                print (result.decode('utf-8'))
+                print (result)
                 sys.stdout.flush()
+                count += 1
+                if args.number and count >= args.number:
+                    break
         elif args.anomaly:
+            count = 0
             anomaly = Anomaly(args.anomaly[0], watches=args.watches,
                     options=' '.join(args.anomaly[1:]))
+            if args.duration: signal.alarm(stoptime)
             for result in client.rad([anomaly], timeout=timeout, **client_args):
-                print (result.decode('utf-8'))
+                print (result)
                 sys.stdout.flush()
+                count += 1
+                if args.number and count >= args.number:
+                    break
         else:
             parser.error('Need channels and watches for SRA mode or anomaly for RAD mode')
     except ProblemDetails as e:
@@ -223,6 +289,7 @@ def main():
     except KeyboardInterrupt:
         return None
     return None
+
 
 if __name__ == '__main__':
     exit(main())
